@@ -37,7 +37,7 @@ def replications_of_sim(T, product_size, item_size, arrival, d_required = 0.9, N
 	return stat.fmean(sim_obj), y-1
 
 #--------------------------------------------
-# testing
+# testing jj kk 
 #--------------------------------------------
 
 
