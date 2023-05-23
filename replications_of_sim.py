@@ -39,7 +39,7 @@ def replications_of_sim(T, product_size, item_size, arrival, d_required = 0.9, N
 #--------------------------------------------
 # testing jj kk llll
 #--------------------------------------------
-print("test")
+print("test 555")
 
 T, product_size, item_size =  (5, 4, 3)
 arrival = np.random.randint(3, 12, size=(T, item_size)) # arrival: (time by item nparray) arrival quntity of a part at the beginning of t
