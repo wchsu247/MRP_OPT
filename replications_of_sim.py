@@ -5,15 +5,15 @@ import math
 import statistics as stat
 
 # return 
-def replications_of_sim(T, product_size, item_size, arrival, d_required = 0.9, N_check = 5, N_min = 5, alpha = 0.05):
+def replications_of_sim(T, product_size, item_size, arrival, d_required = 0.01, N_check = 5, N_min = 10, alpha = 0.05):
 	
 	# index setting 
 	# sim_obj = [3, 5, 5, 6, 7, 8, 13, 14, 14, 17, 18]
 	sim_obj = []
 	y = N_min
-	d_y = 0
+	d_y = 99999
 	
-	while d_y < d_required and y < 30:
+	while d_y >= d_required and y < 100:
 		# print("aaaaaaa")
 		if y == N_min:
 			for i in range(N_min):
@@ -37,14 +37,14 @@ def replications_of_sim(T, product_size, item_size, arrival, d_required = 0.9, N
 	return stat.fmean(sim_obj), y-1
 
 #--------------------------------------------
-# testing jj kk llll
+# testing
 #--------------------------------------------
-print("test 555")
+print("test")
+T, product_size, item_size =  (52, 4, 3)
+arrival = np.random.randint(2, 50, size=(T, item_size))
 
-T, product_size, item_size =  (5, 4, 3)
-arrival = np.random.randint(3, 12, size=(T, item_size)) # arrival: (time by item nparray) arrival quntity of a part at the beginning of t
 ans, y = replications_of_sim(T, product_size, item_size, arrival)
-
+print(ans, y)
 #--------------------------------------------
 
 

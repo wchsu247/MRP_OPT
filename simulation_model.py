@@ -150,7 +150,7 @@ def MRP_abstract(arrival, demand, bom, ini_backlog = None):
 	# 	return None
 
 # simulation: data generation
-def data_gen(T, product_size, item_size, demand_lb = 8, demand_ub = 10):
+def data_gen(T, product_size, item_size, demand_lb = 8, demand_ub = 20):
 	# product_size: size of product types
 	# item_size: size of component types
 
