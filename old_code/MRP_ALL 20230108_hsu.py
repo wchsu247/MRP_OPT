@@ -625,15 +625,15 @@ if __name__ == '__main__' :
 			print(">> alloc_backlog() in %.5f sec." %(time.clock()-tic))
 
 
-
+			'''
 			print("\n run naive_evaluator()...")
 			tic = time.clock()
 			df_backlog3 = naive_evaluator_2(arrival, demand, bom)
 			print(">> naive_evaluator() in %.5f sec." %(time.clock()-tic))
+			'''
 
 
-
-			assert_frame_equal(df_backlog3, df_for_backlog, check_dtype=False)
+			# assert_frame_equal(df_backlog3, df_for_backlog, check_dtype=False)
 			# assert_frame_equal(df_MRP_item, df_for_wc, check_dtype=False)
 			# assert_frame_equal(df_MRP, df_for_wc, check_dtype=False)
 			

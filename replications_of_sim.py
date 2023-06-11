@@ -31,20 +31,22 @@ def replications_of_sim(T, product_size, item_size, arrival, d_required = 0.01, 
 		t_value = stats.t.ppf(1 - alpha/2, y-1)
 		d_y = (t_value*(np.std(sim_obj, ddof=1)/math.sqrt(y)))/(stat.fmean(sim_obj))
 		
-		print(y, d_y, np.std(sim_obj, ddof=1))
+		# print(y, d_y, np.std(sim_obj, ddof=1))
     
 		y += 1
-	return stat.fmean(sim_obj), y-1
+	return stat.fmean(sim_obj) #, y-1
 
 #--------------------------------------------
 # testing
 #--------------------------------------------
+'''
 print("test")
 T, product_size, item_size =  (52, 4, 3)
 arrival = np.random.randint(2, 50, size=(T, item_size))
 
 ans, y = replications_of_sim(T, product_size, item_size, arrival)
 print(ans, y)
+'''
 #--------------------------------------------
 
 

@@ -18,7 +18,7 @@ def main():
 
 	# fully random
 	tic = time.clock()
-	best_random = opt_random.random_fun(T, product_size, item_size, simulation_times)
+	best_random = opt_random.random_fun(T, product_size, item_size)
 	print(">> Random in %.5f sec." %(time.clock()-tic))
 
 
