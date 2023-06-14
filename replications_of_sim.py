@@ -1,4 +1,4 @@
-import simulation_model
+import simulation_model_new as simulation_model
 import numpy as np
 import scipy.stats as stats
 import math

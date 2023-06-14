@@ -1,6 +1,6 @@
 import random
 import numpy as np
-import simulation_model
+import simulation_model_new as simulation_model
 import statistics
 import matplotlib.pyplot as plt
 import math

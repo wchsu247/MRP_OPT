@@ -5,14 +5,13 @@ import opt_ga, opt_random
 def main():
 	
 	#=============================index setting==============================
-	T, product_size, item_size =  (52, 4, 3)
-	simulation_times = 4
+	T, product_size, item_size =  (5, 4, 3)
 	print(f'T={T},  product_size={product_size}, item_size={item_size}')
 	#========================================================================
 	
 	# genetic algorithm
 	tic = time.clock()
-	best_ga = opt_ga.ga_fun(T, product_size, item_size, simulation_times)
+	best_ga = opt_ga.ga_fun(T, product_size, item_size)
 	print(">> GA in %.5f sec." %(time.clock()-tic))
 
 

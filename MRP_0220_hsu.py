@@ -21,21 +21,23 @@ def get_total_backlog(arrival, demand, bom):
 	T, product_size = demand.shape # size of time frame, product types
 	item_size = bom.shape[1] # size of component types
 	itemDemand = np.dot(demand, bom) # total demand of item m at t (T by item_size nparray)
+	# print(itemDemand)
 
 	net = itemDemand - arrival # net qty (time by item nparray) at a particular period, item
 	# net < 0: invetory; net > 0: backlog 
 	balance = np.cumsum(net, axis=0) # detemine total backlog
-	
+	print(balance)
+
 	# convert nparray to dataframe (of x-y coordinate)
 	df = pd.DataFrame(balance).stack().rename_axis(['time', 'item']).reset_index(name='backlog_qty')
+	df['stock_qty'] = df['backlog_qty']
 	df = df.loc[df['backlog_qty']>0].reset_index(drop=True) # only keep value > 0, i.e. with backlog
+	#df = df.loc[df['stock_qty']<0] #.reset_index(drop=True) # only keep value > 0, i.e. with backlog
 
-	df['backlog_qty'] = df['backlog_qty'].astype('int32')
+	# df['backlog_qty'] = df['backlog_qty'].astype('int32')
 	df.sort_values(by=['time', 'item'])
 
-	if len(df) == 0:	return None
-	
-	return df	
+	return None if len(df) == 0 else df
 
 
 # convert ans list to dataframe and sort it
@@ -128,14 +130,14 @@ def data_gen(T, product_size, item_size):
 	# item_size: size of component types
 
 	#  ---------- Case 0 -------------
-	arrival = np.array([[3,3,4]])
-	demand = np.array([[5,5,5,5]])
-	bom = np.array([[1,1,1],[0,0,1],[1,1,0],[1,0,0]])
+	# arrival = np.array([[3,3,4]])
+	# demand = np.array([[5,5,5,5]])
+	# bom = np.array([[1,1,1],[0,0,1],[1,1,0],[1,0,0]])
 
 	#  ---------- Case 1 -------------
-	# arrival = np.array([[2,2,2], [22,18,20], [8,16,8], [0,20,12], [20,0,12]])
-	# demand = np.array([[5,5,5,5],[5,5,5,5],[5,5,5,5],[5,5,5,5],[5,5,5,5]])
-	# bom = np.array([[1,1,1],[0,0,0],[1,1,0],[1,0,0]])
+	arrival = np.array([[2,2,2], [22,18,20], [8,16,8], [0,20,12], [20,0,12]])
+	demand = np.array([[5,5,5,5],[5,5,5,5],[5,5,5,5],[5,5,5,5],[5,5,5,5]])
+	bom = np.array([[1,1,1],[0,0,0],[1,1,0],[1,0,0]])
 
 	return arrival, demand, bom
 
@@ -161,5 +163,5 @@ if __name__ == '__main__' :
 		df_for_wc = get_total_backlog(arrival, demand, bom)
 		print(df_for_wc)
 		df_for_backlog = alloc_backlog(df_for_wc, demand, bom)
-		print(df_for_backlog)
+		# print(df_for_backlog)
 

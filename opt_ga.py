@@ -9,12 +9,13 @@ np.set_printoptions(suppress=True)
 # %matplotlib inline
 warnings.filterwarnings("ignore")
 import statistics
-import simulation_model
+import simulation_model_new as simulation_model
+import replications_of_sim as ros
 
 class GeneticAlgorithm():
 	# Index Setting: Dimension = T*item_size
-	def __init__(self, Nnumber=6, Dimension=156, Bitnum=6, Elite_num=4, CrossoverRate=0.9, MutationRate=0.3, MaxIteration=10):
-		self.N = Nnumber
+	def __init__(self, Dimension, Nnumber=10, Bitnum=4, Elite_num=2, CrossoverRate=0.9, MutationRate=0.1, MaxIteration=100):
+		self.N = Nnumber # Initial population
 		self.D = Dimension
 		self.B = Bitnum
 		self.n = Elite_num
@@ -49,34 +50,18 @@ class GeneticAlgorithm():
 #============================================================
 	# New Objective Function
 #============================================================
-	def fun_2(self, pop, T, product_size, item_size, simulation_times):
+	def fun_2(self, pop, T, product_size, item_size):
 		
 		arrival_set = np.array(pop)
-
 		funsum = []
 		# arrival_set = np.array_split(pop,T)
 		# print(arrival_set)
 
 		for i in arrival_set:
-			
 			# generate a solution from arrival_set
 			sol = np.array_split(i,T)
-			# print(repr(np.array(sol)))
-			
-			# list of objective value in simulation
-			sim_obj = []
-			
-			for j in range(simulation_times):
-				
-				demand, bom = simulation_model.data_gen(T, product_size, item_size)
-				
-				# print(repr(demand))
-				
-				df_production, df_stock, df_backlog = simulation_model.MRP_abstract(np.array(sol), demand, bom)
-				obj_value = simulation_model.obj_function(df_production['production'].sum(),df_stock['stock'].sum(),df_backlog['backlog_qty'].sum())
-				sim_obj.append(obj_value)
-			# print(sim_obj)
-			funsum.append(statistics.fmean(sim_obj))
+
+			funsum.append(ros.replications_of_sim(T, product_size, item_size, np.array(sol)))
 
 		# print(list(funsum))
 		return list(funsum)
@@ -161,9 +146,9 @@ class GeneticAlgorithm():
 				child_2.append(parent2[i])
 		return child_1,child_2
 
-def ga_fun(T, product_size, item_size, simulation_times):
+def ga_fun(T, product_size, item_size):
 	
-	ga = GeneticAlgorithm()
+	ga = GeneticAlgorithm(T*item_size)
 	# print(ga.N, ga.D, ga.B)
 	pop_bin = ga.generatePopulation()
 	pop_dec = []
@@ -172,7 +157,7 @@ def ga_fun(T, product_size, item_size, simulation_times):
 		for j in range(ga.D):
 			chrom_rv.append(ga.B2D(pop_bin[i][j]))
 		pop_dec.append(chrom_rv)
-	fitness = ga.fun_2(pop_dec, T, product_size, item_size, simulation_times)
+	fitness = ga.fun_2(pop_dec, T, product_size, item_size)
 	
 	best_fitness = min(fitness)
 	arr = fitness.index(best_fitness)
@@ -205,7 +190,7 @@ def ga_fun(T, product_size, item_size, simulation_times):
 			final_dec.append(rv)
 
 		# Final fitness
-		final_fitness = ga.fun_2(final_dec, T, product_size, item_size, simulation_times)
+		final_fitness = ga.fun_2(final_dec, T, product_size, item_size)
 
 
 		#Take the best value in this iteration
