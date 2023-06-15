@@ -14,7 +14,7 @@ import replications_of_sim as ros
 
 class GeneticAlgorithm():
 	# Index Setting: Dimension = T*item_size
-	def __init__(self, Dimension, Nnumber=10, Bitnum=4, Elite_num=2, CrossoverRate=0.9, MutationRate=0.1, MaxIteration=100):
+	def __init__(self, Dimension, Nnumber=50, Bitnum=6, Elite_num=6, CrossoverRate=0.9, MutationRate=0.1, MaxIteration=100):
 		self.N = Nnumber # Initial population
 		self.D = Dimension
 		self.B = Bitnum

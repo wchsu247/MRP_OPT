@@ -9,7 +9,7 @@ import pyomo.environ as pyo
 from pyomo.opt import SolverFactory
 from pyomo.opt import SolverStatus, TerminationCondition
 from pandas.testing import assert_frame_equal
-import simulation_model
+import old_code.simulation_model as simulation_model
 import simulation_model_new
 import time
 import replications_of_sim

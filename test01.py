@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import simulation_model
+import simulation_model_new as simulation_model
 
 # 給定隨機種子，使每次執行結果保持一致
 np.random.seed(1)
@@ -110,3 +110,13 @@ for i in range(1, 11):
     plt.title('iter='+str(i)+', loss='+'{:.2f}'.format(mlclass.loss)+'\na='+
             '{:.2f}'.format(mlclass.a)+', b='+'{:.2f}'.format(mlclass.b))
     # plt.show()
+
+
+from numpy import random
+import numpy as np
+x = random.poisson(lam=15, size=(5,5))
+bom = np.random.randint(2, size=(5, 5))
+demand = np.random.randint(8, 20, size=(5, 5))
+print(x)
+print(bom)
+print(demand)

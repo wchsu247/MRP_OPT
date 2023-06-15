@@ -2,7 +2,7 @@
 
 import random
 import numpy as np
-import simulation_model
+import old_code.simulation_model as simulation_model
 import statistics
 import matplotlib.pyplot as plt
 import math

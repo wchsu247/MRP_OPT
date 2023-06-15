@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sklearn
 import seaborn as sns
-import simulation_model
+import old_code.simulation_model as simulation_model
 import replications_of_sim
 
 def generateXvector(X):

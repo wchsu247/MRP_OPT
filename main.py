@@ -15,7 +15,7 @@ def main():
 	print(">> GA in %.5f sec." %(time.clock()-tic))
 
 
-	# fully random
+	# fully random search
 	tic = time.clock()
 	best_random = opt_random.random_fun(T, product_size, item_size)
 	print(">> Random in %.5f sec." %(time.clock()-tic))

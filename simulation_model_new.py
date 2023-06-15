@@ -1,6 +1,7 @@
 # version with priority
 
 import random
+from numpy import random
 import numpy as np
 import pandas as pd
 
@@ -40,18 +41,17 @@ def ans_fun(arrival, T, product_size, item_size, ini_backlog = None):
     return obj_function(df['stock_qty'].sum(), df['backlog_qty'].sum())
 
 # simulation: data generation
-def data_gen(T, product_size, item_size, demand_lb = 8, demand_ub = 20):
+def data_gen(T, product_size, item_size, demand_lb = 8, demand_ub = 20, lam = 20):
 	# T: time frame
 	# product_size: size of product types
 	# item_size: size of component types
 
-	# bom = np.random.randint(2, size=(product_size, item_size))
+	bom = np.random.randint(2, size=(product_size, item_size))
 	# demand = np.random.randint(demand_lb, demand_ub, size=(T, product_size)) # (time by product array) demand @ t 
-
-	#  ---------- Case 0 -------------
-	# arrival = np.array([[3,3,4]])
-	# demand = np.array([[5,5,5,5]])
-	# bom = np.array([[1,1,1],[0,0,1],[1,1,0],[1,0,0]])
+	
+	# Poisson Distribution
+	demand = random.poisson(lam, size=(T, product_size)) # lam — rate or known number of occurences e.g. 2 for above problem
+	
 
 	#  ---------- Case 1 -------------
 	# demand = np.array([[5,5,5,5],[5,5,5,5],[5,5,5,5],[5,5,5,5],[5,5,5,5]])
@@ -82,6 +82,3 @@ if __name__ == '__main__' :
 		# df_backlog, df_stock = get_total_backlog(arrival, demand, bom)
 		print(ans_test)
 '''
-
-
-

@@ -5,12 +5,14 @@ import statistics
 import matplotlib.pyplot as plt
 import math
 import replications_of_sim as ros
+import sys
+MAX_INT=sys.maxsize
 
 # fully random gerneration of arrival
 def random_fun(T, product_size, item_size, random_count_limit = 10, lower_bound = 0, upper_bound = 64):
 
 	count = 0
-	best_obj = 99999999
+	best_obj = MAX_INT
 	best_obj_list = []
 	
 	while count < random_count_limit:
