@@ -14,10 +14,10 @@ import replications_of_sim as ros
 
 class GeneticAlgorithm():
 	# Index Setting: Dimension = T*item_size
-	def __init__(self, Dimension, Nnumber=50, Bitnum=6, Elite_num=6, CrossoverRate=0.9, MutationRate=0.1, MaxIteration=100):
+	def __init__(self, Dimension, Nnumber=50, Bitnum=6, Elite_num=8, CrossoverRate=0.9, MutationRate=0.1, MaxIteration=10):
 		self.N = Nnumber # Initial population
 		self.D = Dimension
-		self.B = Bitnum
+		self.B = Bitnum # the range of the solution: [0,2**Bitnum]
 		self.n = Elite_num
 		self.cr = CrossoverRate
 		self.mr = MutationRate
@@ -38,7 +38,6 @@ class GeneticAlgorithm():
 		return population
 
 	def B2D(self, pop):
-		
 		dec = str(pop[0])
 		for i in range(1,self.B):
 			dec += str(pop[i])
@@ -60,7 +59,6 @@ class GeneticAlgorithm():
 		for i in arrival_set:
 			# generate a solution from arrival_set
 			sol = np.array_split(i,T)
-
 			funsum.append(ros.replications_of_sim(T, product_size, item_size, np.array(sol)))
 
 		# print(list(funsum))
@@ -147,56 +145,64 @@ class GeneticAlgorithm():
 		return child_1,child_2
 
 def ga_fun(T, product_size, item_size):
-	
+    
+    # before iteration setting
 	ga = GeneticAlgorithm(T*item_size)
-	# print(ga.N, ga.D, ga.B)
-	pop_bin = ga.generatePopulation()
+	pop_bin = ga.generatePopulation() # generate initial population
 	pop_dec = []
 	for i in range(ga.N):
+		chrom_rv = [ga.B2D(pop_bin[i][j]) for j in range(ga.D)]
+		'''
 		chrom_rv = []
 		for j in range(ga.D):
 			chrom_rv.append(ga.B2D(pop_bin[i][j]))
+		'''
 		pop_dec.append(chrom_rv)
 	fitness = ga.fun_2(pop_dec, T, product_size, item_size)
-	
-	best_fitness = min(fitness)
-	arr = fitness.index(best_fitness)
-	best_dec = pop_dec[arr]
-	
+	best_fitness = min(fitness) # the best fitness
+	best_dec = pop_dec[fitness.index(best_fitness)] # the best solution
+
 	best_rvlist = []
 	best_valuelist = []
-
 	it = 0
+	# --------------------------------------------------------------
 	while it < ga.max_iter:
-		
 		print(">> Iteration %d" %(it+1))
-		
+
+		# Selection
 		Parents_list = ga.Selection(ga.n, pop_bin, fitness)
+
+
+		# Crossover & Mutation
 		Offspring_list = []
 		for i in range(int((ga.N-ga.n)/2)):
 			candidate = [Parents_list[random.randint(0,len(Parents_list)-1)] for i in range(2)]
 			after_cr_mu = ga.Crossover_Mutation(candidate[0], candidate[1])
 			offspring1, offspring2 = after_cr_mu[0], after_cr_mu[1]
+			Offspring_list.extend((offspring1, offspring2))
+			'''
 			Offspring_list.append(offspring1)
 			Offspring_list.append(offspring2)
-
+			'''
 		final_bin = Parents_list + Offspring_list
+
+		# Transcoding: B2D
 		final_dec = []
 		for i in range(ga.N):
+			rv = [ga.B2D(final_bin[i][j]) for j in range(ga.D)]
+			'''
 			rv = []
 			for j in range(ga.D):
-				# print(i,j)
 				rv.append(ga.B2D(final_bin[i][j]))
+			'''
 			final_dec.append(rv)
 
 		# Final fitness
 		final_fitness = ga.fun_2(final_dec, T, product_size, item_size)
 
-
 		#Take the best value in this iteration
 		smallest_fitness = min(final_fitness)
-		index = final_fitness.index(smallest_fitness)
-		smallest_dec = final_dec[index]
+		smallest_dec = final_dec[final_fitness.index(smallest_fitness)]
 
 		#Store the best fitness in the list
 		best_rvlist.append(smallest_dec)
@@ -208,12 +214,9 @@ def ga_fun(T, product_size, item_size):
 		fitness = final_fitness
 
 		it += 1
-	
-	# print(">> MRP in %.5f sec." %(time.clock()-tic))
-	
+	# --------------------------------------------------------------
 	#Store best result
-	every_best_value = []
-	every_best_value.append(best_valuelist[0])
+	every_best_value = [best_valuelist[0]]
 	for i in range(ga.max_iter-1):
 		if every_best_value[i] >= best_valuelist[i+1]:
 			every_best_value.append(best_valuelist[i+1])
@@ -222,11 +225,9 @@ def ga_fun(T, product_size, item_size):
 			every_best_value.append(every_best_value[i])
 
 	print('The best fitness: ', min(best_valuelist))
-	best_index = best_valuelist.index(min(best_valuelist))
-	# print('Arrival list: ')
-	# print(np.array(np.array_split(best_rvlist[best_index],T)))
+	best_index = best_valuelist.index(min(best_valuelist)) # the best solution
 
-	# visualization
+	'''# visualization
 	plt.figure(figsize = (15,8))
 	plt.xlabel("Iteration",fontsize = 15)
 	plt.ylabel("Fitness",fontsize = 15)
@@ -234,5 +235,6 @@ def ga_fun(T, product_size, item_size):
 	plt.plot(every_best_value,linewidth = 2, label = "Best fitness convergence", color = 'b')
 	plt.legend()
 	plt.show()
-
-	return min(best_valuelist)
+	'''
+	
+	return min(best_valuelist), every_best_value

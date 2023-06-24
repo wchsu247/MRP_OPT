@@ -1,122 +1,170 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import simulation_model_new as simulation_model
 
-# 給定隨機種子，使每次執行結果保持一致
-np.random.seed(1)
-    
-def getdata(n):
-    # n為產生資料量
-    # x = np.arange(-5, 5.1, 10/(n-1))
-    T, product_size, item_size =  (52, 4, 3)
-    x = np.random.randint(2, 50, size=(T, item_size))
-    
-    # 給定一個固定的參數，再加上隨機變動值作為雜訊，其變動值介於 +-10 之間
-    # y = 3*x + 2 + (np.random.rand(len(x))-0.5)*20
-    y = simulation_model.ans_fun(x, T, product_size, item_size)
-    
-    return x, y
+''' SPSA method 1
+# Defining the seed to have same results
+np.random.seed(42)
 
-def plot_error(x, y):
-    a = np.arange(-10, 16, 1)
-    b = np.arange(-10, 16, 1)
-    mesh = np.meshgrid(a, b)
-    sqr_err = 0
-    for xs, ys in zip(x, y):
-        sqr_err += ((mesh[0]*xs + mesh[1]) - ys) ** 2
-    loss = sqr_err/len(x)
-    
-    plt.contour(mesh[0], mesh[1], loss, 20, cmap=plt.cm.jet)
-    plt.xlabel('a')
-    plt.ylabel('b')
-    plt.axis('scaled')
-    plt.title('function loss')
-    plt.colorbar()
-    plt.show()
+def polynomial(a, x):
+	N = len(a)
+	S = 0
+	for k in range(N):
+		S += a[k]*x**k
+	return S
 
-    sqr_err = 0
-    for xs, ys in zip(x, y):
-        sqr_err += ((mesh[0]*xs + mesh[1]) - ys) ** 2
-    loss = sqr_err/len(x)
-    
-    plt.contour(mesh[0], mesh[1], loss, 20, cmap=plt.cm.jet)
-    plt.xlabel('a')
-    plt.ylabel('b')
-    plt.axis('scaled')
-    plt.title('function loss')
+def Loss(parameters, X, Y):
+# Predictions of our model
+	Y_pred = polynomial(parameters, X)
+	
+	# mse (mean square error)
+	L = ((Y_pred - Y)**2).mean()
+	
+	# Noise in range: [-5, 5]
+	noise = 5*np.random.random()
+	return L + noise
 
-class my_BGD:    
-    def __init__(self, a, b, x, y, alpha):
-        self.a = a
-        self.b = b
-        self.x = x
-        self.y = y
-        self.alpha = alpha
-        
-        self.a_old = a
-        self.b_old = b
-        
-        self.loss = self.mse();
-    
-    # Loss function
-    def mse(self):
-        sqr_err = ((self.a*self.x + self.b) - self.y) ** 2
-        return np.mean(sqr_err)
-    
-    def gradient(self):
-        grad_a = 2 * np.mean((self.a*self.x + self.b - self.y) * (self.x))
-        grad_b = 2 * np.mean((self.a*self.x + self.b - self.y) * (1))
-        return grad_a, grad_b
+def grad(L, w, ck):
+	
+	# number of parameters
+	p = len(w)
+	
+	# bernoulli-like distribution
+	deltak = np.random.choice([-1, 1], size=p)
+	
+	# simultaneous perturbations
+	ck_deltak = ck * deltak
 
-    def update(self):
-        # 計算梯度
-        grad_a, grad_b = self.gradient()
-        
-        # 梯度更新
-        self.a_old = self.a
-        self.b_old = self.b
-        self.a = self.a - self.alpha * grad_a
-        self.b = self.b - self.alpha * grad_b
-        self.loss = self.mse();
+	# gradient approximation
+	DELTA_L = L(w + ck_deltak) - L(w - ck_deltak)
 
-# =============================================== #
-# 隨機產生一組資料
-x, y = getdata(51)
-print(x, y)
-# 繪製誤差空間底圖
-plot_error(x, y)
+	return (DELTA_L) / (2 * ck_deltak)
 
-# =============================================== #
+def initialize_hyperparameters(alpha, lossFunction, w0, N_iterations):
 
-# 初始設定
-alpha = 0.1
+	c = 1e-2 # a small number
 
-# 從 -9 開始，能看得更明顯
-a = -9; b = -9
+	# A is <= 10% of the number of iterations
+	A = N_iterations*0.1
 
-# 初始化
-mlclass = my_BGD(a, b, x, y, alpha)
+	# order of magnitude of first gradients
+	magnitude_g0 = np.abs(grad(lossFunction, w0, c).mean())
 
-plt.plot(a, b, 'ro-')
-plt.title('Initial, loss='+'{:.2f}'.format(mlclass.loss)+'\na='+
-        '{:.2f}'.format(a)+', b='+'{:.2f}'.format(b))
-# plt.show()
+	# the number 2 in the front is an estimative of
+	# the initial changes of the parameters,
+	# different changes might need other choices
+	a = 2*((A+1)**alpha)/magnitude_g0
 
-# 開始迭代
-for i in range(1, 11):
-    mlclass.update()
-    print('iter='+str(i)+', loss='+'{:.2f}'.format(mlclass.loss))
-    plt.plot((mlclass.a_old, mlclass.a), (mlclass.b_old, mlclass.b), 'ro-')
-    plt.title('iter='+str(i)+', loss='+'{:.2f}'.format(mlclass.loss)+'\na='+
-            '{:.2f}'.format(mlclass.a)+', b='+'{:.2f}'.format(mlclass.b))
-    # plt.show()
+	return a, A, c
+
+# optimization algorithm
+def SPSA(LossFunction, parameters, alpha=0.602,\
+		gamma=0.101, N_iterations=int(1e5)):
+	
+	# model's parameters
+	w = parameter
+
+	a, A, c = initialize_hyperparameters(
+	alpha, LossFunction, w, N_iterations)
+
+	for k in range(1, N_iterations):
+
+		# update ak and ck
+		ak = a/((k+A)**(alpha))
+		ck = c/(k**(gamma))
+
+		# estimate gradient
+		gk = grad(LossFunction, w, ck)
+
+		# update parameters
+		w -= ak*gk
+
+	return w
+
+# Y is the polynomial to be approximated
+X = np.linspace(0, 10, 100)
+Y = 1*X**2 - 4*X + 3
+
+print(X)
+print(Y)
+
+noise = 3*np.random.normal(size=len(X))
+Y += noise
+
+# plot polynomial
+plt.title("polynomial with noise")
+plt.plot(X, Y, 'go')
+plt.show()
+
+# Initial parameters are randomly
+# choosing in the range: [-10,10]
+parameters = (2*np.random.random(3) - 1)*10
+
+plt.title("Before training")
+
+# Compare true and predicted values before
+# training
+plt.plot(X, polynomial(parameters, X), "bo")
+plt.plot(X, Y, 'go')
+plt.legend(["predicted value", "true value"])
+plt.show()
+
+# Training with SPSA
+parameters = SPSA(LossFunction = lambda parameters: Loss(parameters, X, Y),
+				parameters = parameters)
+
+plt.title("After training")
+plt.plot(X, polynomial(parameters, X), "bo")
+plt.plot(X, Y, 'go')
+plt.legend(["predicted value", "true value"])
+plt.show()
+'''
 
 
-from numpy import random
-import numpy as np
-x = random.poisson(lam=15, size=(5,5))
-bom = np.random.randint(2, size=(5, 5))
-demand = np.random.randint(8, 20, size=(5, 5))
-print(x)
-print(bom)
-print(demand)
+def cost(self, x, u): 
+    dt = .1 if self.arm.DOF == 3 else .01
+    next_x = self.plant_dynamics(x, u, dt=dt)
+    vel_gain = 100 if self.arm.DOF == 3 else 10
+    return (np.sqrt(np.sum((self.arm.x - self.target)**2)) * 1000 \
+        + np.sum((next_x[self.arm.DOF:])**2) * vel_gain)
+
+def spsa(self):
+	# Step 1: Initialization and coefficient selection
+	max_iters = 5
+	converge_thresh = 1e-5
+
+	alpha = 0.602 # from (Spall, 1998)
+	gamma = 0.101
+	a = .101 # found empirically using HyperOpt
+	A = .193
+	c = .0277
+
+	delta_K = None
+	delta_J = None
+	u = np.copy(self.u) if self.u is not None \
+			else np.zeros(self.arm.DOF)
+	for k in range(max_iters):
+		ak = a / (A + k + 1)**alpha
+		ck = c / (k + 1)**gamma
+
+		# Step 2: Generation of simultaneous perturbation vector
+		# choose each component from a bernoulli +-1 distribution with
+		# probability of .5 for each +-1 outcome.
+		delta_k = np.random.choice([-1,1], size=(4,3), p=[.5, .5])
+
+		# Step 3: Function evaluations
+		inc_u = np.copy(u) + ck * delta_k
+		cost_inc = self.cost(np.copy(state), inc_u)
+		dec_u = np.copy(u) - ck * delta_k
+		cost_dec = self.cost(np.copy(state), dec_u)
+
+		# Step 4: Gradient approximation
+		gk = np.dot((cost_inc - cost_dec) / (2.0*ck), delta_k)
+
+		# Step 5: Update u estimate
+		old_u = np.copy(u)
+		u -= ak * gk
+
+		# Step 6: Check for convergence
+		if np.sum(abs(u - old_u)) < converge_thresh:
+			break
+
