@@ -12,7 +12,7 @@ MAX_INT=sys.maxsize
 def initial_sol(T, product_size, item_size, lower_bound = 0, upper_bound = 64):
 	return np.random.randint(lower_bound, upper_bound, size=(T, item_size))
 
-def normalization(T, product_size, item_size, sample_size = 10):
+def normalization(T, product_size, item_size, sample_size = 100):
 	sample_list = []
 	for i in range(sample_size):
 		sample_list.append(ros.replications_of_sim(T, product_size, item_size, initial_sol(T, product_size, item_size)))
@@ -29,13 +29,14 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, lower_bound = 0, upper
 	'''
 	# -----------------------------------------------------------
 	# index setting (1)
-	alpha = 0.602 # .602 from (Spall, 1998)
-	gamma = 0.167 # .167 default
-	a = .101 # .101 found empirically using HyperOpt
-	A = .193
-	c = .0277 # .0277 defaultT * product_size *item_size
+	alpha = 0 # .602 from (Spall, 1998)
+	gamma = 0.0167 # .167 default
+	a = 1 # .101 found empirically using HyperOpt
+	A = .193 # .193 default
+	c = .0277 # .0277 default # T * product_size *item_size
 	u = initial_sol(T, product_size, item_size)
 	sample_mean, sample_std = normalization(T, product_size, item_size)
+	# print(sample_mean)
 	# scalar_u = ros.replications_of_sim(T, product_size, item_size, u)
 	# print(u)
 
@@ -64,7 +65,7 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, lower_bound = 0, upper
 
 		# Step 4: Gradient approximation
 		g_k = np.dot((y_thetaplus - y_thetaminus) / (2.0*c_k), delta_k)
-		# print(g_k[0][0])
+		# print(a_k * g_k[0][0])
 
 		# Step 5: Update u estimate
 		# u = np.asarray(np.where((u-a_k*g_k<0, 0, u-a_k*g_k) & (u-a_k*g_k>64, 64, u-a_k*g_k)), dtype = 'int')
@@ -81,8 +82,7 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, lower_bound = 0, upper
 
 	print("The best fitness:   %d" %(best_obj))
 	# -----------------------------------------------------------------------------------
-	'''
-	# visualization
+	'''# visualization
 	plt.figure(figsize = (15,8))
 	plt.xlabel("Iteration",fontsize = 15)
 	plt.ylabel("Fitness",fontsize = 15)
@@ -91,12 +91,12 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, lower_bound = 0, upper
 	plt.legend()
 	plt.show()
 	'''
-
 	return best_obj, best_obj_list
 
-''' # test
+'''
+# test
 if __name__ == '__main__' :
 	print("go ...")
 	T, product_size, item_size = (200, 40, 30)
-	spsa_fun(T, product_size, item_size)
+	spsa_fun(T, product_size, item_size, 100)
 '''
