@@ -31,7 +31,7 @@ def get_total_backlog(arrival, demand, bom):
 
 	return None if len(df) == 0 else  df
 
-def obj_function(stock, backlog, cost_s = 5, cost_b = 10):
+def obj_function(stock, backlog, cost_s = .5, cost_b = 1):
 	return cost_s*stock + cost_b*backlog
 
 def ans_fun(arrival, T, product_size, item_size, ini_backlog = None):

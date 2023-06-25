@@ -14,7 +14,7 @@ import replications_of_sim as ros
 
 class GeneticAlgorithm():
 	# Index Setting: Dimension = T*item_size
-	def __init__(self, Dimension, Nnumber=50, Bitnum=6, Elite_num=8, CrossoverRate=0.9, MutationRate=0.1, MaxIteration=10):
+	def __init__(self, Dimension, MaxIteration, Nnumber=50, Bitnum=6, Elite_num=8, CrossoverRate=0.9, MutationRate=0.1):
 		self.N = Nnumber # Initial population
 		self.D = Dimension
 		self.B = Bitnum # the range of the solution: [0,2**Bitnum]
@@ -144,10 +144,10 @@ class GeneticAlgorithm():
 				child_2.append(parent2[i])
 		return child_1,child_2
 
-def ga_fun(T, product_size, item_size):
+def ga_fun(T, product_size, item_size, MaxIteration):
     
     # before iteration setting
-	ga = GeneticAlgorithm(T*item_size)
+	ga = GeneticAlgorithm(T*item_size, MaxIteration)
 	pop_bin = ga.generatePopulation() # generate initial population
 	pop_dec = []
 	for i in range(ga.N):
@@ -171,7 +171,6 @@ def ga_fun(T, product_size, item_size):
 
 		# Selection
 		Parents_list = ga.Selection(ga.n, pop_bin, fitness)
-
 
 		# Crossover & Mutation
 		Offspring_list = []
