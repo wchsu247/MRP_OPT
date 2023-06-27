@@ -48,5 +48,5 @@ if __name__ == '__main__':
 	print("The best ans of DE: %.5f for %.5f sec." % (best_de, time_de))
 	
 	# visualization
-	visualization.vis(bl_de, bl_random, bl_spsa)
+	visualization.vis(bl_ga, bl_random, bl_spsa, bl_de)
 	

@@ -41,7 +41,8 @@ def de_fun(T, product_size, item_size, MaxIteration, pop_size):
     
     # Store best result
     every_best_value = [problem.fitness_list[0]]
-    for i in range(MaxIteration):
+    print(MaxIteration, pop_size)
+    for i in range(MaxIteration*pop_size-1):
         if every_best_value[i] >= problem.fitness_list[i+1]:
             every_best_value.append(problem.fitness_list[i+1])
         elif every_best_value[i] <= problem.fitness_list[i+1]:
