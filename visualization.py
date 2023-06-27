@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 def vis(bl_ga, bl_random, bl_spsa):
 
 	plt.figure(figsize = (15,8))
-	plt.xlabel("Iteration",fontsize = 15)
+	plt.xlabel("# Measurements",fontsize = 15)
 	plt.ylabel("Fitness",fontsize = 15)
 
 	plt.plot(bl_ga, 'r')

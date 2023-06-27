@@ -41,7 +41,7 @@ def ans_fun(arrival, T, product_size, item_size, ini_backlog = None):
     return obj_function(df['stock_qty'].sum(), df['backlog_qty'].sum())
 
 # simulation: data generation
-def data_gen(T, product_size, item_size, demand_lb = 8, demand_ub = 20, lam = 20):
+def data_gen(T, product_size, item_size, lam = 800):
 	# T: time frame
 	# product_size: size of product types
 	# item_size: size of component types

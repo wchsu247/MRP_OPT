@@ -14,7 +14,7 @@ import replications_of_sim as ros
 
 class GeneticAlgorithm():
 	# Index Setting: Dimension = T*item_size
-	def __init__(self, Dimension, MaxIteration, Nnumber=50, Bitnum=6, Elite_num=8, CrossoverRate=0.9, MutationRate=0.1):
+	def __init__(self, Dimension, MaxIteration, Nnumber, Bitnum=10, Elite_num=6, CrossoverRate=0.9, MutationRate=0.1):
 		self.N = Nnumber # Initial population
 		self.D = Dimension
 		self.B = Bitnum # the range of the solution: [0,2**Bitnum]
@@ -65,7 +65,7 @@ class GeneticAlgorithm():
 		return list(funsum)
 
 #============================================================
-	# Selection method 1
+	'''# Selection method 1
 	def Selection1(self, n, pop_bin, fitness):
 		select_bin = pop_bin.copy()
 		fitness1 = fitness.copy()
@@ -81,6 +81,7 @@ class GeneticAlgorithm():
 				del select_bin[arr]
 				del fitness1[arr]
 		return Parents
+	'''
 
 	# Selection method 2
 	def Selection(self, n, pop_bin, fitness):
@@ -144,10 +145,10 @@ class GeneticAlgorithm():
 				child_2.append(parent2[i])
 		return child_1,child_2
 
-def ga_fun(T, product_size, item_size, MaxIteration):
+def ga_fun(T, product_size, item_size, MaxIteration, pop_size):
     
     # before iteration setting
-	ga = GeneticAlgorithm(T*item_size, MaxIteration)
+	ga = GeneticAlgorithm(T*item_size, MaxIteration, pop_size)
 	pop_bin = ga.generatePopulation() # generate initial population
 	pop_dec = []
 	for i in range(ga.N):
@@ -223,17 +224,21 @@ def ga_fun(T, product_size, item_size, MaxIteration):
 		elif every_best_value[i] <= best_valuelist[i+1]:
 			every_best_value.append(every_best_value[i])
 
+	ga_ans_list = []
+	for i in every_best_value:
+		for k in range(pop_size): ga_ans_list.append(i)
+
 	print('The best fitness: ', min(best_valuelist))
-	best_index = best_valuelist.index(min(best_valuelist)) # the best solution
+	# best_index = best_valuelist.index(min(best_valuelist)) # the best solution
 
 	'''# visualization
 	plt.figure(figsize = (15,8))
 	plt.xlabel("Iteration",fontsize = 15)
 	plt.ylabel("Fitness",fontsize = 15)
 
-	plt.plot(every_best_value,linewidth = 2, label = "Best fitness convergence", color = 'b')
+	plt.plot(ga_ans_list,linewidth = 2, label = "Best fitness convergence", color = 'b')
 	plt.legend()
 	plt.show()
 	'''
 	
-	return min(best_valuelist), every_best_value
+	return min(best_valuelist), ga_ans_list

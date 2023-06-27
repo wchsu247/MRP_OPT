@@ -1,110 +1,76 @@
-import random
 import numpy as np
+from pymoo.algorithms.soo.nonconvex.de import DE
+from pymoo.problems import get_problem
+from pymoo.operators.sampling.lhs import LHS
+from pymoo.optimize import minimize
+from pymoo.core.problem import ElementwiseProblem
+from pymoo.termination import get_termination
+import replications_of_sim as ros
+import matplotlib.pyplot as plt
 
-def differential_evolution(func, bounds, popsize=20, mutation=0.8, recombination=0.7, maxiter=100, tol=1e-6):
-    """
-    Differential Evolution optimization algorithm with binary encoding for multiple discrete decision variables.
+class MyProblem(ElementwiseProblem):
+    def __init__(self, T, product_size, item_size, upper_bound = 1024):
+        super().__init__(n_var=T*item_size, n_obj=1, n_constr=0, xl=np.zeros(T*item_size), xu=np.ones(T*item_size) * upper_bound)
+        self.parameters=[T, product_size, item_size]
+        self.count = 0
+        self.fitness_list = []
 
-    Parameters:
-    func (function): Objective function to minimize.
-    bounds (list): List of tuples with the lower and upper bounds of each decision variable.
-    popsize (int): Population size.
-    mutation (float): Mutation rate.
-    recombination (float): Recombination rate.
-    maxiter (int): Maximum number of iterations.
-    tol (float): Tolerance for convergence.
+    def _evaluate(self, x, out, *args, **kwargs):
+        print(">> Case %d" %(self.count+1))
+        self.count += 1
+        T, product_size, item_size = self.parameters[0], self.parameters[1], self.parameters[2]
+        f1 = ros.replications_of_sim(T, product_size, item_size, x.reshape(T,item_size).astype('int'))
+        self.fitness_list.append(f1)
+        out["F"] = [f1]
 
-    Returns:
-    best_solution (list): Best solution found.
-    best_fitness (float): Best fitness value found.
-    """
-    num_vars = len(bounds)
+def de_fun(T, product_size, item_size, MaxIteration, pop_size):
+    problem = MyProblem(T, product_size, item_size)
+    termination = get_termination("n_gen", MaxIteration)
+
+    algorithm = DE(
+        pop_size,
+        sampling=LHS(),
+        variant="DE/rand/1/bin",
+        CR=0.3,
+        dither="vector",
+        jitter=False
+    )
+
+    res = minimize(problem, algorithm, termination, seed=1, verbose=False)
+    # print(problem.fitness_list)
     
-    # Create bins for each discrete variable
-    bins = []
-    for i in range(num_vars):
-        lower, upper = bounds[i]
-        num_bins = int(upper - lower) + 1
-        bins.append(np.linspace(lower, upper, num_bins))
+    # Store best result
+    every_best_value = [problem.fitness_list[0]]
+    for i in range(MaxIteration):
+        if every_best_value[i] >= problem.fitness_list[i+1]:
+            every_best_value.append(problem.fitness_list[i+1])
+        elif every_best_value[i] <= problem.fitness_list[i+1]:
+            every_best_value.append(every_best_value[i])
     
-    # Convert binary string to continuous variables
-    def decode_chromosome(chromosome):
-        variables = []
-        for i in range(num_vars):
-            num_bits = int(np.ceil(np.log2(len(bins[i]))))
-            bin_str = ''.join(str(bit) for bit in chromosome[i*num_bits:(i+1)*num_bits])
-            bin_int = int(bin_str, 2)
-            variables.append(bins[i][bin_int])
-        return variables
+    # best_solution = res.X.astype('int')
+    print('The best fitness: ', res.F[0])
+    # print("Best solution found: \nX = %s\nF = %s" % (res.X, res.X.astype('int')))
     
-    # Encode continuous variables as binary strings
-    def encode_chromosome(variables):
-        chromosome = []
-        for i in range(num_vars):
-            num_bits = int(np.ceil(np.log2(len(bins[i]))))
-            bin_int = np.abs(bins[i] - variables[i]).argmin()
-            bin_str = bin(bin_int)[2:].zfill(num_bits)
-            chromosome.extend([int(bit) for bit in bin_str])
-        return chromosome
-    
-    # Initialize population with random solutions
-    population = [encode_chromosome([random.choice(bins[i]) for i in range(num_vars)]) for _ in range(popsize)]
-    fitness = [func(decode_chromosome(chromosome)) for chromosome in population]
-    
-    # Find best solution
-    best_idx = np.argmin(fitness)
-    best_solution = decode_chromosome(population[best_idx])
-    best_fitness = fitness[best_idx]
-    
-    # Main loop
-    for i in range(maxiter):
-        for j in range(popsize):
-            # Select three unique solutions
-            idxs = [idx for idx in range(popsize) if idx != j]
-            a, b, c = random.sample(idxs, 3)
-            
-            # Mutation
-            mutant = [population[a][k] + mutation * (population[b][k] - population[c][k]) for k in range(num_vars)]
-            mutant = [max(min(mutant[k], 1), 0) for k in range(num_vars)] # Ensure values are between 0 and 1
-            
-            # Crossover
-            trial = []
-            for k in range(num_vars):
-                if random.random() < recombination:
-                    trial.append(mutant[k])
-                else:
-                    trial.append(population[j][k])
-            
-            # Convert trial solution to binary string and decode
-            trial_decoded = decode_chromosome(encode_chromosome(trial))
-            trial_fitness = func(trial_decoded)
-            
-            # Update population and best solution
-            if trial_fitness < fitness[j]:
-                population[j] = encode_chromosome(trial)
-                fitness[j] = trial_fitness
-                
-                if trial_fitness < best_fitness:
-                    best_solution = trial_decoded
-                    best_fitness = trial_fitness
-                    
-        # Check convergence
-        if best_fitness < tol:
-            break
-            
-    return best_solution, best_fitness
+    return res.F[0], every_best_value
 
+'''# test
+if __name__ == '__main__' :
+	print("go ...")
+	T, product_size, item_size = (200, 40, 30)
+	import time
+	time.clock = time.time
+	
+	tic = time.clock()
+	best_de, bl_de = de_fun(T, product_size, item_size, 2, 50)
+	time_spsa = time.clock()-tic
+	print(">> DE in %.5f sec." %time_spsa)
 
-# Define objective function to minimize
-def rosenbrock(x):
-    return (100.0 *x[0]+5*x[1]**+x[2])
+    # visualization
+	plt.figure(figsize = (15,8))
+	plt.xlabel("Iteration",fontsize = 15)
+	plt.ylabel("Fitness",fontsize = 15)
 
-# Define bounds of each variable
-bounds = [(-5, 5), (-5, 5), (-5, 5)]
-
-# Call differential_evolution function
-best_solution, best_fitness = differential_evolution(rosenbrock, bounds)
-
-# Print best solution and fitness
-print('Best solution:', best_solution)
-print('Best fitness:', best_fitness)
+	plt.plot(bl_de,linewidth = 2, label = "Best fitness convergence", color = 'b')
+	plt.legend()
+	plt.show()
+'''

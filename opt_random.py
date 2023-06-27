@@ -1,15 +1,12 @@
 import random
 import numpy as np
-import simulation_model_new as simulation_model
-import statistics
 import matplotlib.pyplot as plt
-import math
 import replications_of_sim as ros
 import sys
 MAX_INT=sys.maxsize
 
 # fully random arrival
-def random_fun(T, product_size, item_size, opt_count_limit, lower_bound = 0, upper_bound = 64):
+def random_fun(T, product_size, item_size, opt_count_limit, lower_bound = 0, upper_bound = 1024):
 
 	best_obj = MAX_INT
 	best_obj_list = []
@@ -24,8 +21,6 @@ def random_fun(T, product_size, item_size, opt_count_limit, lower_bound = 0, upp
 
 		# get the cost of the decision
 		obj_value = ros.replications_of_sim(T, product_size, item_size, arrival)
-
-
 
 		if obj_value < best_obj:
 			best_obj = obj_value
