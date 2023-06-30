@@ -5,9 +5,9 @@ import opt_ga, opt_random, opt_spsa, opt_de, visualization
 if __name__ == '__main__':
 	
 	#=============================index setting==============================
-	T, product_size, item_size =  (200, 40, 30)
+	T, product_size, item_size =  (5, 4, 3)
 	# MaxIteration = 30
-	Max_measurements = 150 # This value should be a multiple of 'ga_pop_size = 50' and 'spsa_measurements_per_iteration = 3'
+	Max_measurements = 1500 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
 	print(f'T={T},  product_size={product_size}, item_size={item_size}')
 	#========================================================================
 	

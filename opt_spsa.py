@@ -29,7 +29,7 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, lower_bound = 0, upper
 	'''
 	# -----------------------------------------------------------
 	# index setting (1)
-	alpha = 0 # .602 from (Spall, 1998)
+	alpha = 0.2 # .602 from (Spall, 1998)
 	gamma = 0.167 # .167 default
 	a = 1 # .101 found empirically using HyperOpt
 	A = .193 # .193 default
@@ -48,7 +48,6 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, lower_bound = 0, upper
 		print(">> Case %d" %(k+1))
 		# index setting (2)
 
-		# a_k = 1 / (k+1)
 		a_k = a / (A + k + 1)**alpha 	# a_k = 1 / (k+1)
 		c_k = c / (k + 1)**gamma		# c_k = 1 / ((1 + k) ** (1 / 6))
 

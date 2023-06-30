@@ -26,12 +26,11 @@ class MyProblem(ElementwiseProblem):
 def de_fun(T, product_size, item_size, MaxIteration, pop_size):
     problem = MyProblem(T, product_size, item_size)
     termination = get_termination("n_gen", MaxIteration)
-
     algorithm = DE(
         pop_size,
         sampling=LHS(),
         variant="DE/rand/1/bin",
-        CR=0.3,
+        CR=0.7,
         dither="vector",
         jitter=False
     )
@@ -41,7 +40,7 @@ def de_fun(T, product_size, item_size, MaxIteration, pop_size):
     
     # Store best result
     every_best_value = [problem.fitness_list[0]]
-    print(MaxIteration, pop_size)
+    # print(MaxIteration, pop_size)
     for i in range(MaxIteration*pop_size-1):
         if every_best_value[i] >= problem.fitness_list[i+1]:
             every_best_value.append(problem.fitness_list[i+1])

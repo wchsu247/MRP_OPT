@@ -7,7 +7,7 @@ import sys
 MAX_INT=sys.maxsize
 
 # return the mean value from replications of simulation
-def replications_of_sim(T, product_size, item_size, arrival, d_required = 0.01, N_min = 10, alpha = 0.05, y_lim = 100):
+def replications_of_sim(T, product_size, item_size, arrival, d_required = 0.015, N_min = 10, alpha = 0.05, y_lim = 100):
 	'''
 		Input: T, product_size, item_size, arrival (one solution)
 		Parameters: 
