@@ -5,23 +5,24 @@ import opt_ga, opt_random, opt_spsa, opt_de, visualization
 if __name__ == '__main__':
 	
 	#=============================index setting==============================
-	T, product_size, item_size =  (5, 4, 3)
+	T, product_size, item_size =  (5, 4, 3) # product_size should be power of 2
+	upper_bound = product_size*1024
 	# MaxIteration = 30
-	Max_measurements = 1500 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
+	Max_measurements = 150 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
 	print(f'T={T},  product_size={product_size}, item_size={item_size}')
 	#========================================================================
 	
 	# genetic algorithm
 	ga_pop_size = 50
 	tic = time.clock()
-	best_ga, bl_ga = opt_ga.ga_fun(T, product_size, item_size, int(Max_measurements/ga_pop_size) , ga_pop_size)
+	best_ga, bl_ga = opt_ga.ga_fun(T, product_size, item_size, int(Max_measurements/ga_pop_size) , ga_pop_size, upper_bound)
 	time_ga = time.clock()-tic
 	print(">> GA in %.5f sec." %time_ga)
 
 	
 	# fully random search
 	tic = time.clock()
-	best_random, bl_random = opt_random.random_fun(T, product_size, item_size, Max_measurements)
+	best_random, bl_random = opt_random.random_fun(T, product_size, item_size, Max_measurements, upper_bound)
 	time_random = time.clock()-tic
 	print(">> Random in %.5f sec." %time_random)
 
@@ -29,7 +30,7 @@ if __name__ == '__main__':
 	# spsa algorithm
 	spsa_measurements_per_iteration = 3
 	tic = time.clock()
-	best_spsa, bl_spsa = opt_spsa.spsa_fun(T, product_size, item_size, int(Max_measurements/spsa_measurements_per_iteration))
+	best_spsa, bl_spsa = opt_spsa.spsa_fun(T, product_size, item_size, int(Max_measurements/spsa_measurements_per_iteration), upper_bound)
 	time_spsa = time.clock()-tic
 	print(">> SPSA in %.5f sec." %time_spsa)
 
@@ -37,7 +38,7 @@ if __name__ == '__main__':
 	# differential evolution algorithm
 	de_pop_size = 50
 	tic = time.clock()
-	best_de, bl_de = opt_de.de_fun(T, product_size, item_size, int(Max_measurements/de_pop_size) , de_pop_size)
+	best_de, bl_de = opt_de.de_fun(T, product_size, item_size, int(Max_measurements/de_pop_size) , de_pop_size, upper_bound)
 	time_de = time.clock()-tic
 	print(">> DE in %.5f sec." %time_de)
 

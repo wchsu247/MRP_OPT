@@ -9,20 +9,20 @@ MAX_INT=sys.maxsize
 
 
 # -----------------------------------------------------------
-def initial_sol(T, product_size, item_size, lower_bound = 0, upper_bound = 1024):
+def initial_sol(T, product_size, item_size, upper_bound, lower_bound = 0):
 	return np.random.randint(lower_bound, upper_bound, size=(T, item_size))
 
-def normalization(T, product_size, item_size, sample_size = 50):
+def normalization(T, product_size, item_size, upper_bound, sample_size = 50):
 	sample_list = []
 	for i in range(sample_size):
-		sample_list.append(ros.replications_of_sim(T, product_size, item_size, initial_sol(T, product_size, item_size)))
+		sample_list.append(ros.replications_of_sim(T, product_size, item_size, initial_sol(T, product_size, item_size, upper_bound)))
 	# sample_mean = np.mean(sample_list)
 	sample_std = np.std(sample_list)
 	return sample_std
 
 
 # return a integer of the optimization solution (weighted cost) 
-def spsa_fun(T, product_size, item_size, opt_count_limit, lower_bound = 0, upper_bound = 1024):
+def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_bound = 0):
 	'''
 		Input: initial solution of arrival
 		opt_count_limit: # iterations for the SPSA algorithm
@@ -34,8 +34,8 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, lower_bound = 0, upper
 	a = 1 # .101 found empirically using HyperOpt
 	A = .193 # .193 default
 	c = .0277 # .0277 default # T * product_size *item_size
-	u = initial_sol(T, product_size, item_size)
-	sample_std = normalization(T, product_size, item_size)
+	u = initial_sol(T, product_size, item_size, upper_bound)
+	sample_std = normalization(T, product_size, item_size, upper_bound)
 	# print(sample_mean)
 	# scalar_u = ros.replications_of_sim(T, product_size, item_size, u)
 	# print(u)

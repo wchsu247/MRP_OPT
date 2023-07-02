@@ -6,7 +6,7 @@ import sys
 MAX_INT=sys.maxsize
 
 # fully random arrival
-def random_fun(T, product_size, item_size, opt_count_limit, lower_bound = 0, upper_bound = 1024):
+def random_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_bound = 0):
 
 	best_obj = MAX_INT
 	best_obj_list = []

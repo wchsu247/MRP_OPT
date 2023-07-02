@@ -21,6 +21,7 @@ if __name__ == '__main__' :
 	T, product_size, item_size = (200, 40, 30)
 	demand, bom = simulation_model.data_gen(T, product_size, item_size) # data generation
 	arrival = np.random.randint(0, 1024, size=(T, item_size))
+	# arrival = np.ones((T, item_size))*3000
 	
 	tic = time.clock()
 	# obj_value_1 = simulation_model.ans_fun(arrival, T, product_size, item_size)

@@ -9,7 +9,7 @@ import replications_of_sim as ros
 import matplotlib.pyplot as plt
 
 class MyProblem(ElementwiseProblem):
-    def __init__(self, T, product_size, item_size, upper_bound = 1024):
+    def __init__(self, T, product_size, item_size, upper_bound):
         super().__init__(n_var=T*item_size, n_obj=1, n_constr=0, xl=np.zeros(T*item_size), xu=np.ones(T*item_size) * upper_bound)
         self.parameters=[T, product_size, item_size]
         self.count = 0
@@ -23,8 +23,8 @@ class MyProblem(ElementwiseProblem):
         self.fitness_list.append(f1)
         out["F"] = [f1]
 
-def de_fun(T, product_size, item_size, MaxIteration, pop_size):
-    problem = MyProblem(T, product_size, item_size)
+def de_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound):
+    problem = MyProblem(T, product_size, item_size, upper_bound)
     termination = get_termination("n_gen", MaxIteration)
     algorithm = DE(
         pop_size,

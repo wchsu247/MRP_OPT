@@ -11,10 +11,12 @@ warnings.filterwarnings("ignore")
 import statistics
 import simulation_model_new as simulation_model
 import replications_of_sim as ros
+import math
 
 class GeneticAlgorithm():
 	# Index Setting: Dimension = T*item_size
-	def __init__(self, Dimension, MaxIteration, Nnumber, Bitnum=10, Elite_num=6, CrossoverRate=0.9, MutationRate=0.1):
+	def __init__(self, Dimension, MaxIteration, Nnumber, upper_bound, Elite_num=6, CrossoverRate=0.9, MutationRate=0.1):
+		Bitnum = int(math.log2(upper_bound))
 		self.N = Nnumber # Initial population
 		self.D = Dimension
 		self.B = Bitnum # the range of the solution: [0,2**Bitnum]
@@ -145,10 +147,10 @@ class GeneticAlgorithm():
 				child_2.append(parent2[i])
 		return child_1,child_2
 
-def ga_fun(T, product_size, item_size, MaxIteration, pop_size):
+def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound):
     
     # before iteration setting
-	ga = GeneticAlgorithm(T*item_size, MaxIteration, pop_size)
+	ga = GeneticAlgorithm(T*item_size, MaxIteration, pop_size, upper_bound)
 	pop_bin = ga.generatePopulation() # generate initial population
 	pop_dec = []
 	for i in range(ga.N):
