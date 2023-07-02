@@ -33,6 +33,7 @@ if __name__ == '__main__':
 	time_spsa = time.clock()-tic
 	print(">> SPSA in %.5f sec." %time_spsa)
 
+
 	# differential evolution algorithm
 	de_pop_size = 50
 	tic = time.clock()

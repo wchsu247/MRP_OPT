@@ -19,6 +19,6 @@ def vis(bl_ga, bl_random, bl_spsa, bl_de):
 
 	plt.legend(['GA', 'Random', 'SPSA', 'DE'])
 	plt.title('MRP Problem')
-	plt.savefig(str(random_number)+".png")
+	plt.savefig('c:/Users/MB608/Desktop/theis_MRP/theis_MRP/Reusult_Plot/'+str(random_number)+'.png')
 	# plt.show()
 	return 
