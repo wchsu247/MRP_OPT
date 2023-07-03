@@ -1,8 +1,12 @@
 import numpy as np
-from pymoo.algorithms.soo.nonconvex.de import DE
+from pymoo.algorithms.soo.nonconvex.ga import GA
 from pymoo.problems import get_problem
-from pymoo.operators.sampling.lhs import LHS
 from pymoo.operators.sampling.rnd import FloatRandomSampling
+from pymoo.operators.selection.tournament import TournamentSelection
+from pymoo.algorithms.soo.nonconvex.ga import comp_by_cv_and_fitness
+from pymoo.operators.crossover.sbx import SimulatedBinaryCrossover
+from pymoo.operators.mutation.pm import PolynomialMutation
+from pymoo.algorithms.soo.nonconvex.ga import FitnessSurvival
 from pymoo.optimize import minimize
 from pymoo.core.problem import ElementwiseProblem
 from pymoo.termination import get_termination
@@ -24,18 +28,18 @@ class MyProblem(ElementwiseProblem):
         self.fitness_list.append(f1)
         out["F"] = [f1]
 
-def de_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound):
+def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound):
     problem = MyProblem(T, product_size, item_size, upper_bound)
     termination = get_termination("n_gen", MaxIteration)
-    algorithm = DE(
-        pop_size,
-        sampling=FloatRandomSampling(),
-        variant="DE/rand/2/bin",
-        CR=0.3,
-        dither="vector",
-        jitter=False
-    )
-
+    algorithm = GA(
+    pop_size,
+    sampling=FloatRandomSampling(),
+    selection=TournamentSelection(func_comp=comp_by_cv_and_fitness),
+    crossover=SimulatedBinaryCrossover(prob=0.9),
+    mutation=PolynomialMutation(prob=0.1),
+    survival=FitnessSurvival(),
+    n_offsprings=None,
+    eliminate_duplicates=True)
     res = minimize(problem, algorithm, termination, seed=1, verbose=False)
     # print(problem.fitness_list)
     
@@ -62,7 +66,7 @@ if __name__ == '__main__' :
 	time.clock = time.time
 	
 	tic = time.clock()
-	best_de, bl_de = de_fun(T, product_size, item_size, 2, 50, product_size*1024)
+	best_de, bl_de = ga_fun(T, product_size, item_size, 2, 50, 1024*product_size)
 	time_spsa = time.clock()-tic
 	print(">> DE in %.5f sec." %time_spsa)
 

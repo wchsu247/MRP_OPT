@@ -1,21 +1,30 @@
 import time
 time.clock = time.time
-import opt_ga, opt_random, opt_spsa, opt_de, visualization
+import opt_ga, opt_ga_new, opt_random, opt_spsa, opt_de, visualization
 
 if __name__ == '__main__':
 	
 	#=============================index setting==============================
-	T, product_size, item_size =  (5, 4, 3) # product_size should be power of 2
-	upper_bound = product_size*1024
+	T, product_size, item_size =  (200, 40, 30) # product_size should be power of 2
+	upper_bound = product_size*1000
 	# MaxIteration = 30
-	Max_measurements = 150 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
+	Max_measurements = 4500 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
 	print(f'T={T},  product_size={product_size}, item_size={item_size}')
 	#========================================================================
 	
+	'''
 	# genetic algorithm
 	ga_pop_size = 50
 	tic = time.clock()
-	best_ga, bl_ga = opt_ga.ga_fun(T, product_size, item_size, int(Max_measurements/ga_pop_size) , ga_pop_size, upper_bound)
+	best_ga, bl_ga = opt_ga.ga_fun(T, product_size, item_size, int(Max_measurements/ga_pop_size), ga_pop_size, upper_bound)
+	time_ga = time.clock()-tic
+	print(">> GA in %.5f sec." %time_ga)
+	'''
+ 
+	# genetic algorithm 2
+	ga_pop_size = 50
+	tic = time.clock()
+	best_ga, bl_ga = opt_ga_new.ga_fun(T, product_size, item_size, int(Max_measurements/ga_pop_size), ga_pop_size, upper_bound)
 	time_ga = time.clock()-tic
 	print(">> GA in %.5f sec." %time_ga)
 

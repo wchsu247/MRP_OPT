@@ -11,7 +11,9 @@ MAX_INT=sys.maxsize
 # -----------------------------------------------------------
 def initial_sol(T, product_size, item_size, upper_bound, lower_bound = 0):
 	return np.random.randint(lower_bound, upper_bound, size=(T, item_size))
+	# return np.ones((T, item_size))*upper_bound
 
+'''
 def normalization(T, product_size, item_size, upper_bound, sample_size = 50):
 	sample_list = []
 	for i in range(sample_size):
@@ -19,7 +21,7 @@ def normalization(T, product_size, item_size, upper_bound, sample_size = 50):
 	# sample_mean = np.mean(sample_list)
 	sample_std = np.std(sample_list)
 	return sample_std
-
+'''
 
 # return a integer of the optimization solution (weighted cost) 
 def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_bound = 0):
@@ -29,13 +31,14 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_bou
 	'''
 	# -----------------------------------------------------------
 	# index setting (1)
-	alpha = 0.2 # .602 from (Spall, 1998)
-	gamma = 0.167 # .167 default
-	a = 1 # .101 found empirically using HyperOpt
+	alpha = .602 # .602 from (Spall, 1998)
+	gamma = .167 # .167 default
+	a = .0101 # .101 found empirically using HyperOpt
 	A = .193 # .193 default
-	c = .0277 # .0277 default # T * product_size *item_size
+	c = 1 # .0277 default # T * product_size *item_size
 	u = initial_sol(T, product_size, item_size, upper_bound)
-	sample_std = normalization(T, product_size, item_size, upper_bound)
+	d_k = 100
+	# sample_std = normalization(T, product_size, item_size, upper_bound)
 	# print(sample_mean)
 	# scalar_u = ros.replications_of_sim(T, product_size, item_size, u)
 	# print(u)
@@ -45,7 +48,7 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_bou
 
 	for k in range(opt_count_limit):
 
-		print(">> Case %d" %(k+1))
+		# print(">> Case %d" %(k+1))
 		# index setting (2)
 
 		a_k = a / (A + k + 1)**alpha 	# a_k = 1 / (k+1)
@@ -54,17 +57,23 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_bou
 		# Step 2: Generation of simultaneous perturbation vector
 		# choose each component from a bernoulli +-1 distribution with
 		# probability of .5 for each +-1 outcome.
-		delta_k = np.random.choice([-1,1], size=(T, item_size), p=[.5, .5])
+		delta_k = np.random.choice([-d_k,d_k], size=(T, item_size), p=[.5, .5])
+		# print(c_k*delta_k[0][0])
 
 		# Step 3: Function evaluations
-		thetaplus = np.asarray(u + c_k*delta_k, dtype = 'int')
-		thetaminus = np.asarray(u - c_k*delta_k, dtype = 'int')
+		thetaplus = np.where(u + c_k*delta_k < lower_bound, lower_bound, u + c_k*delta_k)
+		thetaplus = np.where(thetaplus > upper_bound, upper_bound, thetaplus).astype('int')
 		y_thetaplus = ros.replications_of_sim(T, product_size, item_size, thetaplus)
+		
+		thetaminus = np.where(u - c_k*delta_k < lower_bound, lower_bound, u - c_k*delta_k)
+		thetaminus = np.where(thetaminus > upper_bound, upper_bound, thetaminus).astype('int')
 		y_thetaminus = ros.replications_of_sim(T, product_size, item_size, thetaminus)
 
+		# print(thetaplus.min(), thetaplus.max())
+
 		# Step 4: Gradient approximation
-		g_k = np.dot((y_thetaplus - y_thetaminus) / (2.0*c_k) / sample_std, delta_k)
-		# print(a_k * g_k[0][0])
+		g_k = np.dot((y_thetaplus - y_thetaminus) / (2.0*c_k*d_k**2), delta_k)
+		# print(c_k*delta_k[0][0], a_k * g_k[0][0])
 
 		# Step 5: Update u estimate
 		# u = np.asarray(np.where((u-a_k*g_k<0, 0, u-a_k*g_k) & (u-a_k*g_k>64, 64, u-a_k*g_k)), dtype = 'int')
@@ -96,7 +105,7 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_bou
 	return best_obj, spsa_ans_list
 
 
-'''# test
+# test
 if __name__ == '__main__' :
 	print("go ...")
 	T, product_size, item_size = (200, 40, 30)
@@ -104,7 +113,7 @@ if __name__ == '__main__' :
 	time.clock = time.time
 	
 	tic = time.clock()
-	spsa_fun(T, product_size, item_size, 100)
+	spsa_fun(T, product_size, item_size, 100, product_size*1000)
 	time_spsa = time.clock()-tic
 	print(">> SPSA in %.5f sec." %time_spsa)
-'''
+

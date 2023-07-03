@@ -60,8 +60,8 @@ class GeneticAlgorithm():
 
 		for i in arrival_set:
 			# generate a solution from arrival_set
-			sol = np.array_split(i,T)
-			funsum.append(ros.replications_of_sim(T, product_size, item_size, np.array(sol)))
+			arrival = np.array_split(i,T)
+			funsum.append(ros.replications_of_sim(T, product_size, item_size, arrival))
 
 		# print(list(funsum))
 		return list(funsum)

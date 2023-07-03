@@ -13,7 +13,7 @@ def random_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_b
 	
 	for k in range(opt_count_limit):
 		# initialize variables
-		print(">> Case %d" %(k+1))
+		# print(">> Case %d" %(k+1))
 
 		# generate an solution randomly
 		arrival = np.random.randint(lower_bound, upper_bound, size=(T, item_size))
