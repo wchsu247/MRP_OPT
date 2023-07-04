@@ -2,14 +2,14 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 import replications_of_sim as ros
-import sys
-MAX_INT=sys.maxsize
+# import sys
+# MAX_INT=sys.maxsize
 
 # fully random arrival
-def random_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_bound = 0):
+def random_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial_sol, lower_bound = 0):
 
-	best_obj = MAX_INT
-	best_obj_list = []
+	best_obj = initial_sol
+	best_obj_list = [initial_sol]
 	
 	for k in range(opt_count_limit):
 		# initialize variables

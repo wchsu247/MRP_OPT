@@ -28,7 +28,7 @@ class MyProblem(ElementwiseProblem):
         self.fitness_list.append(f1)
         out["F"] = [f1]
 
-def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound):
+def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, initial_sol):
     problem = MyProblem(T, product_size, item_size, upper_bound)
     termination = get_termination("n_gen", MaxIteration)
     algorithm = GA(
@@ -42,16 +42,18 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound):
     eliminate_duplicates=True)
     res = minimize(problem, algorithm, termination, seed=1, verbose=False)
     # print(problem.fitness_list)
-    
+
+
     # Store best result
-    every_best_value = [problem.fitness_list[0]]
+    every_best_value = [initial_sol]
     # print(MaxIteration, pop_size)
-    for i in range(MaxIteration*pop_size-1):
-        if every_best_value[i] >= problem.fitness_list[i+1]:
-            every_best_value.append(problem.fitness_list[i+1])
-        elif every_best_value[i] <= problem.fitness_list[i+1]:
+    for i in range(MaxIteration*pop_size):
+        if every_best_value[i] >= problem.fitness_list[i]:
+            every_best_value.append(problem.fitness_list[i])
+        elif every_best_value[i] <= problem.fitness_list[i]:
             every_best_value.append(every_best_value[i])
-    
+
+
     # best_solution = res.X.astype('int')
     print('The best fitness: ', res.F[0])
     # print("Best solution found: \nX = %s\nF = %s" % (res.X, res.X.astype('int')))

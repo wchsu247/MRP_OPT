@@ -9,9 +9,9 @@ MAX_INT=sys.maxsize
 
 
 # -----------------------------------------------------------
-def initial_sol(T, product_size, item_size, upper_bound, lower_bound = 0):
+def initial_sol_fun(T, product_size, item_size, upper_bound, lower_bound = 0):
 	return np.random.randint(lower_bound, upper_bound, size=(T, item_size))
-	# return np.ones((T, item_size))*upper_bound
+	# return np.ones((T, item_size))*5000
 
 '''
 def normalization(T, product_size, item_size, upper_bound, sample_size = 50):
@@ -24,7 +24,7 @@ def normalization(T, product_size, item_size, upper_bound, sample_size = 50):
 '''
 
 # return a integer of the optimization solution (weighted cost) 
-def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_bound = 0):
+def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial_sol, lower_bound = 0):
 	'''
 		Input: initial solution of arrival
 		opt_count_limit: # iterations for the SPSA algorithm
@@ -36,15 +36,15 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_bou
 	a = .0101 # .101 found empirically using HyperOpt
 	A = .193 # .193 default
 	c = 1 # .0277 default # T * product_size *item_size
-	u = initial_sol(T, product_size, item_size, upper_bound)
+	u = initial_sol_fun(T, product_size, item_size, upper_bound)
 	d_k = 100
 	# sample_std = normalization(T, product_size, item_size, upper_bound)
 	# print(sample_mean)
 	# scalar_u = ros.replications_of_sim(T, product_size, item_size, u)
 	# print(u)
 
-	best_obj = MAX_INT
-	best_obj_list = []
+	best_obj = initial_sol
+	best_obj_list = [initial_sol]
 
 	for k in range(opt_count_limit):
 
@@ -88,10 +88,10 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_bou
 		best_obj_list.append(best_obj)
 
 	print("The best fitness:   %d" %(best_obj))
-	spsa_ans_list = []
+	spsa_ans_list = [initial_sol]
 	spsa_measurment_per_iteration = 3
-	for i in best_obj_list:
-		for k in range(spsa_measurment_per_iteration): spsa_ans_list.append(i)
+	for i in range(len(best_obj_list)-1):
+		for k in range(spsa_measurment_per_iteration): spsa_ans_list.append(spsa_ans_list[i+1])
 	# -----------------------------------------------------------------------------------
 	'''# visualization
 	plt.figure(figsize = (15,8))
@@ -105,7 +105,7 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, lower_bou
 	return best_obj, spsa_ans_list
 
 
-# test
+'''# test
 if __name__ == '__main__' :
 	print("go ...")
 	T, product_size, item_size = (200, 40, 30)
@@ -116,4 +116,4 @@ if __name__ == '__main__' :
 	spsa_fun(T, product_size, item_size, 100, product_size*1000)
 	time_spsa = time.clock()-tic
 	print(">> SPSA in %.5f sec." %time_spsa)
-
+'''

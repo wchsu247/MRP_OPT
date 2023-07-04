@@ -5,7 +5,7 @@ import random
 
 
 
-def vis(bl_ga, bl_random, bl_spsa, bl_de):
+def vis(bl_ga, bl_random, bl_spsa, bl_de, bl_mix):
 
 	random_number = np.random.randint(1000, 9999)
 	plt.figure(figsize = (15,8))
@@ -16,8 +16,9 @@ def vis(bl_ga, bl_random, bl_spsa, bl_de):
 	plt.plot(bl_random, 'k')
 	plt.plot(bl_spsa, 'b')
 	plt.plot(bl_de, 'g')
+	plt.plot(bl_mix, 'm') 
 
-	plt.legend(['GA', 'Random', 'SPSA', 'DE'])
+	plt.legend(['GA', 'Random', 'SPSA', 'DE', 'MIX'])
 	plt.title('MRP Problem')
 	plt.savefig('c:/Users/MB608/Desktop/theis_MRP/theis_MRP/Reusult_Plot/'+str(random_number)+'.png')
 	print(random_number)
