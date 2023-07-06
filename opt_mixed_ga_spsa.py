@@ -26,7 +26,7 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, arrival, 
 	a = .0101 # .101 found empirically using HyperOpt
 	A = .193 # .193 default
 	c = 1 # .0277 default # T * product_size *item_size
-	u = arrival*upper_bound/2
+	u = arrival*upper_bound/20
 	d_k = 100
 	# sample_std = normalization(T, product_size, item_size, upper_bound)
 	# print(sample_mean)
@@ -91,7 +91,6 @@ class MyProblem(ElementwiseProblem):
         # print(arrival)
         
         f1 = spsa_fun(T, product_size, item_size, self.spsa_round, self.upper_bound, arrival)
-        
         # f1 = ros.replications_of_sim(T, product_size, item_size, arrival)
         self.fitness_list.extend(f1)
         # print(self.fitness_list)
@@ -127,7 +126,7 @@ def mix_fun(T, product_size, item_size, MaxIteration, pop_size, spsa_round, uppe
         for k in range(spsa_measurment_per_iteration): mix_ans_list.append(every_best_value[i+1])
     
     # best_solution = res.X.astype('int')
-    print('The best fitness: ', min(mix_ans_list))
+    print('The best fitness: %d' %min(mix_ans_list))
     # print("Best solution found: \nX = %s\nF = %s" % (res.X, res.X.astype('int')))
     
     return min(mix_ans_list), mix_ans_list

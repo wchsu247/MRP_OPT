@@ -55,7 +55,7 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
 
 
     # best_solution = res.X.astype('int')
-    print('The best fitness: ', res.F[0])
+    print('The best fitness: %d' %res.F[0])
     # print("Best solution found: \nX = %s\nF = %s" % (res.X, res.X.astype('int')))
     
     return res.F[0], every_best_value

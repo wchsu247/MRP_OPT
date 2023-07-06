@@ -10,7 +10,7 @@ MAX_INT=sys.maxsize
 
 # -----------------------------------------------------------
 def initial_sol_fun(T, product_size, item_size, upper_bound, lower_bound = 0):
-	return np.random.randint(lower_bound, upper_bound, size=(T, item_size))
+	return np.random.randint(lower_bound, upper_bound/20, size=(T, item_size))
 	# return np.ones((T, item_size))*5000
 
 '''
@@ -89,9 +89,10 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial_s
 
 	print("The best fitness:   %d" %(best_obj))
 	spsa_ans_list = [initial_sol]
+	# print(len(best_obj_list),len(spsa_ans_list))
 	spsa_measurment_per_iteration = 3
 	for i in range(len(best_obj_list)-1):
-		for k in range(spsa_measurment_per_iteration): spsa_ans_list.append(spsa_ans_list[i+1])
+		for k in range(spsa_measurment_per_iteration): spsa_ans_list.append(best_obj_list[i+1])
 	# -----------------------------------------------------------------------------------
 	'''# visualization
 	plt.figure(figsize = (15,8))
@@ -113,7 +114,7 @@ if __name__ == '__main__' :
 	time.clock = time.time
 	
 	tic = time.clock()
-	spsa_fun(T, product_size, item_size, 100, product_size*1000)
+	spsa_fun(T, product_size, item_size, 8, product_size*1000, 1500000000)
 	time_spsa = time.clock()-tic
 	print(">> SPSA in %.5f sec." %time_spsa)
 '''

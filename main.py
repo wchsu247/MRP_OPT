@@ -6,12 +6,12 @@ import opt_ga, opt_ga_new, opt_random, opt_spsa, opt_de, opt_mixed_ga_spsa, visu
 if __name__ == '__main__':
 	
 	#=============================index setting==============================
-	T, product_size, item_size =  (200, 40, 30) # product_size should be power of 2
+	T, product_size, item_size =  (5, 4, 3) # product_size should be power of 2
 	print(f'T={T},  product_size={product_size}, item_size={item_size}')
 	upper_bound = product_size*1000
 	# MaxIteration = 30
-	Max_measurements = 450 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
-	initial_sol = ros.replications_of_sim(T, product_size, item_size, np.random.randint(0, upper_bound, size=(T, item_size)))
+	Max_measurements = 4500 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
+	initial_sol = ros.replications_of_sim(T, product_size, item_size, np.random.randint(0, upper_bound/20, size=(T, item_size)))
 	print(f'initial fitness = {initial_sol}')
 	#========================================================================
 	
