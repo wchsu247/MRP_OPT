@@ -40,7 +40,7 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
     survival=FitnessSurvival(),
     n_offsprings=None,
     eliminate_duplicates=True)
-    res = minimize(problem, algorithm, termination, seed=1, verbose=False)
+    res = minimize(problem, algorithm, termination, seed=9, verbose=False)
     # print(problem.fitness_list)
 
 
@@ -56,7 +56,7 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
 
     # best_solution = res.X.astype('int')
     print('The best fitness: %d' %res.F[0])
-    # print("Best solution found: \nX = %s\nF = %s" % (res.X, res.X.astype('int')))
+    # print("Best solution found: \nX = %s" %res.X.astype('int'))
     
     return res.F[0], every_best_value
 

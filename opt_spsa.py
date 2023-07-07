@@ -6,12 +6,14 @@ from numpy.random import rand
 import replications_of_sim as ros
 import sys
 MAX_INT=sys.maxsize
+import warnings
+warnings.filterwarnings('ignore')
 
 
 # -----------------------------------------------------------
 def initial_sol_fun(T, product_size, item_size, upper_bound, lower_bound = 0):
-	return np.random.randint(lower_bound, upper_bound/20, size=(T, item_size))
-	# return np.ones((T, item_size))*5000
+	# return np.random.randint(lower_bound, upper_bound, size=(T, item_size))
+	return np.ones((T, item_size))*upper_bound/2
 
 '''
 def normalization(T, product_size, item_size, upper_bound, sample_size = 50):
@@ -33,7 +35,7 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial_s
 	# index setting (1)
 	alpha = .602 # .602 from (Spall, 1998)
 	gamma = .167 # .167 default
-	a = .0101 # .101 found empirically using HyperOpt
+	a = .00101 # .101 found empirically using HyperOpt
 	A = .193 # .193 default
 	c = 1 # .0277 default # T * product_size *item_size
 	u = initial_sol_fun(T, product_size, item_size, upper_bound)
@@ -94,19 +96,11 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial_s
 	for i in range(len(best_obj_list)-1):
 		for k in range(spsa_measurment_per_iteration): spsa_ans_list.append(best_obj_list[i+1])
 	# -----------------------------------------------------------------------------------
-	'''# visualization
-	plt.figure(figsize = (15,8))
-	plt.xlabel("# Measurements",fontsize = 15)
-	plt.ylabel("Fitness",fontsize = 15)
 
-	plt.plot(best_obj_list,linewidth = 2, label = "Best fitness convergence", color = 'b')
-	plt.legend()
-	plt.show()
-	'''
 	return best_obj, spsa_ans_list
 
 
-'''# test
+# test
 if __name__ == '__main__' :
 	print("go ...")
 	T, product_size, item_size = (200, 40, 30)
@@ -114,7 +108,15 @@ if __name__ == '__main__' :
 	time.clock = time.time
 	
 	tic = time.clock()
-	spsa_fun(T, product_size, item_size, 8, product_size*1000, 1500000000)
+	best_spsa, bl_spsa = spsa_fun(T, product_size, item_size, 9000, product_size*1000, 1000000000)
 	time_spsa = time.clock()-tic
 	print(">> SPSA in %.5f sec." %time_spsa)
-'''
+	# visualization
+	plt.figure(figsize = (15,8))
+	plt.xlabel("# Measurements",fontsize = 15)
+	plt.ylabel("Fitness",fontsize = 15)
+
+	plt.plot(bl_spsa,linewidth = 2, label = "Best fitness convergence", color = 'b')
+	plt.legend()
+	plt.show()
+
