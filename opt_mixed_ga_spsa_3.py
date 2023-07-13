@@ -134,7 +134,7 @@ def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
     flag = 1
     current_best_obj = initial_sol
     print("GA", end="")
-    res = minimize(problem, algorithm, termination, seed=10, verbose=False)
+    res = minimize(problem, algorithm, termination, seed=23, verbose=False)
     best_obj = int(res.F[0])
     ga_best_solution = res.X.reshape(T,item_size).astype('int')
     every_best_value.extend(ga_sol_list_order(current_best_obj, problem.fitness_list))
@@ -145,7 +145,7 @@ def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
         if best_obj < current_best_obj and flag == 1: # remain GA
             current_best_obj = best_obj
             print("->GA", end="")
-            res = minimize(problem, algorithm, termination, seed=9, verbose=False)
+            res = minimize(problem, algorithm, termination, seed=44, verbose=False)
             every_best_value.extend(ga_sol_list_order(current_best_obj, problem.fitness_list))
             problem.fitness_list = []
             best_obj = int(res.F[0])
@@ -166,7 +166,7 @@ def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
 
         elif best_obj >= current_best_obj and flag == 2:   # switch to GA
             print("->GA", end="")
-            res = minimize(problem, algorithm, termination, seed=5, verbose=False)
+            res = minimize(problem, algorithm, termination, seed=98, verbose=False)
             every_best_value.extend(ga_sol_list_order(current_best_obj, problem.fitness_list))
             problem.fitness_list = []
             best_obj = int(res.F[0])
@@ -181,7 +181,7 @@ def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
     
     return min(best_obj, current_best_obj), every_best_value
 
-# test
+'''# test
 if __name__ == '__main__' :
 	print("go ...")
 	T, product_size, item_size = (200, 40, 30)
@@ -189,16 +189,19 @@ if __name__ == '__main__' :
 	time.clock = time.time
 	
 	tic = time.clock()
-	best_de, bl_de = mix3_fun(T, product_size, item_size, 9000, 50, 1000*product_size, 1000000000)
+	best_de, bl_de = mix3_fun(T, product_size, item_size, 18000, 50, 1000*product_size, 1000000000)
 	time_spsa = time.clock()-tic
 	print(">> GA in %.5f sec." %time_spsa)
 
 	# visualization
 	plt.figure(figsize = (15,8))
-	plt.xlabel("Iteration",fontsize = 15)
+	plt.xlabel("Measurements",fontsize = 15)
 	plt.ylabel("Fitness",fontsize = 15)
-
-	plt.plot(bl_de,linewidth = 2, label = "Best fitness convergence", color = 'b')
+	plt.axvline(x=5600, c="r", ls="--", lw=2)
+	plt.axvline(x=9200, c="r", ls="--", lw=2)
+	plt.axvline(x=15200, c="r", ls="--", lw=2)
+	plt.axvline(x=17700, c="r", ls="--", lw=2)
+	plt.plot(bl_de,linewidth = 2, label = "MIX3 best fitness convergence", color = 'b')
 	plt.legend()
 	plt.show()
-
+'''

@@ -36,7 +36,7 @@ def de_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
         jitter=False
     )
 
-    res = minimize(problem, algorithm, termination, seed=1, verbose=False)
+    res = minimize(problem, algorithm, termination, seed=4, verbose=False)
     # print(problem.fitness_list)
     
     # Store best result

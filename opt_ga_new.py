@@ -12,6 +12,8 @@ from pymoo.core.problem import ElementwiseProblem
 from pymoo.termination import get_termination
 import replications_of_sim as ros
 import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings('ignore')
 
 class MyProblem(ElementwiseProblem):
     def __init__(self, T, product_size, item_size, upper_bound):
@@ -40,7 +42,7 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
     survival=FitnessSurvival(),
     n_offsprings=None,
     eliminate_duplicates=True)
-    res = minimize(problem, algorithm, termination, seed=9, verbose=False)
+    res = minimize(problem, algorithm, termination, seed=98, verbose=False)
     # print(problem.fitness_list)
 
 
@@ -60,15 +62,15 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
     
     return res.F[0], every_best_value
 
-'''# test
+# test
 if __name__ == '__main__' :
 	print("go ...")
-	T, product_size, item_size = (200, 48, 30)
+	T, product_size, item_size = (200, 40, 30)
 	import time
 	time.clock = time.time
 	
 	tic = time.clock()
-	best_de, bl_de = ga_fun(T, product_size, item_size, 2, 50, 1024*product_size)
+	best_de, bl_de = ga_fun(T, product_size, item_size, 360, 50, 1000*product_size, 1000000000)
 	time_spsa = time.clock()-tic
 	print(">> DE in %.5f sec." %time_spsa)
 
@@ -80,4 +82,4 @@ if __name__ == '__main__' :
 	plt.plot(bl_de,linewidth = 2, label = "Best fitness convergence", color = 'b')
 	plt.legend()
 	plt.show()
-'''
+

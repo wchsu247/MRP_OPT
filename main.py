@@ -1,7 +1,7 @@
 import numpy as np
 import time
 time.clock = time.time
-import opt_ga_new, opt_random, opt_spsa, opt_de, visualization, replications_of_sim as ros
+import opt_ga_new, opt_random, opt_spsa, opt_de, visualization
 import  opt_mixed_ga_spsa, opt_mixed_ga_spsa_2, opt_mixed_ga_spsa_3
 
 if __name__ == '__main__':
@@ -70,13 +70,13 @@ if __name__ == '__main__':
 	# mixed ga and spsa algorithm 2
 	mix2_pop_size = 50
 	tic = time.clock()
-	best_mix2, bl_mix2 = opt_mixed_ga_spsa_2.mix2_fun(T, product_size, item_size, int(Max_measurements/mix2_pop_size), mix2_pop_size, upper_bound, initial_sol)
+	best_mix2, bl_mix2 = opt_mixed_ga_spsa_2.mix2_fun(T, product_size, item_size, Max_measurements, mix2_pop_size, upper_bound, initial_sol)
 	time_mix2 = time.clock()-tic
 	print(">> MIX2 in %.5f sec." %time_mix2)
  
  
 	# mixed ga and spsa algorithm 3
-	mix3_pop_size = 50
+	mix3_pop_size = 25
 	tic = time.clock()
 	best_mix3, bl_mix3 = opt_mixed_ga_spsa_3.mix3_fun(T, product_size, item_size, Max_measurements, mix3_pop_size, upper_bound, initial_sol)
 	time_mix3 = time.clock()-tic

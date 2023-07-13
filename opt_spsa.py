@@ -100,7 +100,7 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial_s
 	return best_obj, spsa_ans_list
 
 
-# test
+'''# test
 if __name__ == '__main__' :
 	print("go ...")
 	T, product_size, item_size = (200, 40, 30)
@@ -119,4 +119,4 @@ if __name__ == '__main__' :
 	plt.plot(bl_spsa,linewidth = 2, label = "Best fitness convergence", color = 'b')
 	plt.legend()
 	plt.show()
-
+'''

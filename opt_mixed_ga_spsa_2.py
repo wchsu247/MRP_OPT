@@ -101,9 +101,9 @@ class MyProblem(ElementwiseProblem):
         self.fitness_list.append(f1)
         out["F"] = [f1]
 
-def mix2_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, initial_sol):
+def mix2_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, initial_sol, a = 60):
     problem = MyProblem(T, product_size, item_size, upper_bound)
-    termination = get_termination("n_gen", int(MaxIteration/2))
+    termination = get_termination("n_gen", a)
     algorithm = GA(
     pop_size,
     sampling=FloatRandomSampling(),
@@ -113,14 +113,14 @@ def mix2_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
     survival=FitnessSurvival(),
     n_offsprings=None,
     eliminate_duplicates=True)
-    res = minimize(problem, algorithm, termination, seed=9, verbose=False)
+    res = minimize(problem, algorithm, termination, seed=23, verbose=False)
     # print(problem.fitness_list)
 
 
     # Store best result
     every_best_value = [initial_sol]
     # print(MaxIteration, pop_size)
-    for i in range(int(MaxIteration/2)*pop_size):
+    for i in range(len(problem.fitness_list)):
         if every_best_value[i] >= problem.fitness_list[i]:
             every_best_value.append(problem.fitness_list[i])
         elif every_best_value[i] <= problem.fitness_list[i]:
@@ -129,7 +129,7 @@ def mix2_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
 
     ga_best_solution = res.X.reshape(T,item_size).astype('int')
     spsa_measurements_per_iteration = 3
-    best_obj, spsa_ans_list = spsa_fun(T, product_size, item_size, int(MaxIteration/2*pop_size/spsa_measurements_per_iteration), upper_bound, int(res.F[0]), ga_best_solution)
+    best_obj, spsa_ans_list = spsa_fun(T, product_size, item_size, int((MaxIteration-a*pop_size)/spsa_measurements_per_iteration), upper_bound, int(res.F[0]), ga_best_solution)
     every_best_value.extend(spsa_ans_list)
     
     print('ga best fitness: %d' %(res.F[0]))
@@ -146,17 +146,17 @@ if __name__ == '__main__' :
 	time.clock = time.time
 	
 	tic = time.clock()
-	best_de, bl_de = mix2_fun(T, product_size, item_size, 180, 50, 1000*product_size, 1000000000)
+	best_de, bl_de = mix2_fun(T, product_size, item_size, 18000, 50, 1000*product_size, 1000000000)
 
 	time_spsa = time.clock()-tic
 	print(">> GA in %.5f sec." %time_spsa)
 
 	# visualization
 	plt.figure(figsize = (15,8))
-	plt.xlabel("Iteration",fontsize = 15)
+	plt.xlabel("Measurements",fontsize = 15)
 	plt.ylabel("Fitness",fontsize = 15)
-
-	plt.plot(bl_de,linewidth = 2, label = "Best fitness convergence", color = 'b')
+	plt.axvline(x=3000, c="r", ls="--", lw=2)
+	plt.plot(bl_de,linewidth = 2, label = "MIX2 best fitness convergence", color = 'b')
 	plt.legend()
 	plt.show()
 '''

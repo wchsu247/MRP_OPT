@@ -12,7 +12,8 @@ from pymoo.core.problem import ElementwiseProblem
 from pymoo.termination import get_termination
 import replications_of_sim as ros
 import matplotlib.pyplot as plt
-
+import warnings
+warnings.filterwarnings('ignore')
 
 def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, arrival, lower_bound = 0):
 	'''
@@ -108,7 +109,7 @@ def mix_fun(T, product_size, item_size, MaxIteration, pop_size, spsa_round, uppe
     survival=FitnessSurvival(),
     n_offsprings=None,
     eliminate_duplicates=True)
-    res = minimize(problem, algorithm, termination, seed=1, verbose=False)
+    res = minimize(problem, algorithm, termination, seed=30, verbose=False)
     # print(problem.fitness_list)
     
     # Store best result
@@ -136,19 +137,25 @@ if __name__ == '__main__' :
 	print("go ...")
 	T, product_size, item_size = (200, 40, 30)
 	import time
-	time.clock = time.time
-	
+	time.clock = time.time	
+ 
+ 
+ 	# mixed ga and spsa algorithm
+	mixed_pop_size = 15
+	spsa_round = 10
+	upper_bound = product_size*1000
+	spsa_measurements_per_iteration = 3
 	tic = time.clock()
-	best_de, bl_de = mix_fun(T, product_size, item_size, 3, 25, 6, product_size*1000, 1316006610)
-	time_spsa = time.clock()-tic
-	print(">>  in %.5f sec." %time_spsa)
-	print(len(bl_de))
+	best_mix, bl_mix = mix_fun(T, product_size, item_size, int(18000/(mixed_pop_size*spsa_round*spsa_measurements_per_iteration)), mixed_pop_size, spsa_round, upper_bound, 1000000000)
+	time_mix = time.clock()-tic
+ 
+	print(">>  in %.5f sec." %time_mix)
     # visualization
 	plt.figure(figsize = (15,8))
-	plt.xlabel("Iteration",fontsize = 15)
+	plt.xlabel("Measurements",fontsize = 15)
 	plt.ylabel("Fitness",fontsize = 15)
 
-	plt.plot(bl_de,linewidth = 2, label = "Best fitness convergence", color = 'b')
+	plt.plot(bl_mix,linewidth = 2, label = "MIX1 best fitness convergence", color = 'b')
 	plt.legend()
 	plt.show()
 '''
