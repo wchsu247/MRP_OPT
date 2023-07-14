@@ -11,7 +11,7 @@ if __name__ == '__main__':
 	print(f'T={T},  product_size={product_size}, item_size={item_size}')
 	upper_bound = product_size*1000
 	# MaxIteration = 30
-	Max_measurements = 4500*2 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
+	Max_measurements = 4500 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
 	# initial_sol = ros.replications_of_sim(T, product_size, item_size, np.random.randint(0, upper_bound/20, size=(T, item_size)))
 	initial_sol = 1000000000
 	print(f'initial fitness = {initial_sol}')
@@ -91,7 +91,7 @@ if __name__ == '__main__':
 	print("The best ans of DE:   %.5f for %.5f sec." % (best_de, time_de))
 	print("The best ans of MIX:  %.5f for %.5f sec." % (best_mix, time_mix))
 	print("The best ans of MIX2: %.5f for %.5f sec." % (best_mix2, time_mix2))
-	print("The best ans of MIX2: %.5f for %.5f sec." % (best_mix3, time_mix3))
+	print("The best ans of MIX3: %.5f for %.5f sec." % (best_mix3, time_mix3))
  
 	# visualization
 	visualization.vis(bl_ga, bl_random, bl_spsa, bl_de, bl_mix, bl_mix2, bl_mix3)
