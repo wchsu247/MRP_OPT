@@ -11,7 +11,7 @@ if __name__ == '__main__':
 	print(f'T={T},  product_size={product_size}, item_size={item_size}')
 	upper_bound = product_size*1000
 	# MaxIteration = 30
-	Max_measurements = 4500 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
+	Max_measurements = 4500*2 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
 	# initial_sol = ros.replications_of_sim(T, product_size, item_size, np.random.randint(0, upper_bound/20, size=(T, item_size)))
 	initial_sol = 1000000000
 	print(f'initial fitness = {initial_sol}')
@@ -49,13 +49,13 @@ if __name__ == '__main__':
 	print(">> SPSA in %.5f sec." %time_spsa)
 
 
-	# differential evolution algorithm
+	'''# differential evolution algorithm
 	de_pop_size = 50
 	tic = time.clock()
 	best_de, bl_de = opt_de.de_fun(T, product_size, item_size, int(Max_measurements/de_pop_size), de_pop_size, upper_bound, initial_sol)
 	time_de = time.clock()-tic
 	print(">> DE in %.5f sec." %time_de)
-	
+	'''
 
 	# mixed ga and spsa algorithm
 	mixed_pop_size = 15
@@ -80,19 +80,19 @@ if __name__ == '__main__':
 	tic = time.clock()
 	best_mix3, bl_mix3 = opt_mixed_ga_spsa_3.mix3_fun(T, product_size, item_size, Max_measurements, mix3_pop_size, upper_bound, initial_sol)
 	time_mix3 = time.clock()-tic
-	print(">> MIX2 in %.5f sec." %time_mix3)
+	print(">> MIX3 in %.5f sec." %time_mix3)
 
-	print(len(bl_ga), len(bl_random), len(bl_spsa), len(bl_de), len(bl_mix), len(bl_mix2), len(bl_mix3))
+	print(len(bl_ga), len(bl_random), len(bl_spsa), len(bl_mix), len(bl_mix2), len(bl_mix3))
 
 	# conclusion
 	print("The best ans of GA:   %.5f for %.5f sec." % (best_ga, time_ga))
 	print("The best ans of RS:   %.5f for %.5f sec." % (best_random, time_random))
 	print("The best ans of SPSA: %.5f for %.5f sec." % (best_spsa, time_spsa))
-	print("The best ans of DE:   %.5f for %.5f sec." % (best_de, time_de))
+	# print("The best ans of DE:   %.5f for %.5f sec." % (best_de, time_de))
 	print("The best ans of MIX:  %.5f for %.5f sec." % (best_mix, time_mix))
 	print("The best ans of MIX2: %.5f for %.5f sec." % (best_mix2, time_mix2))
 	print("The best ans of MIX3: %.5f for %.5f sec." % (best_mix3, time_mix3))
  
 	# visualization
-	visualization.vis(bl_ga, bl_random, bl_spsa, bl_de, bl_mix, bl_mix2, bl_mix3)
+	visualization.vis(bl_ga, bl_random, bl_spsa, bl_mix, bl_mix2, bl_mix3)
 	

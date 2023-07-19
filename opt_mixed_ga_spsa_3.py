@@ -103,7 +103,7 @@ def ga_sol_list_order(upper_bound, fitness_list):
 
 class MyProblem(ElementwiseProblem):
     def __init__(self, T, product_size, item_size, upper_bound):
-        super().__init__(n_var=T*item_size, n_obj=1, n_constr=0, xl=np.zeros(T*item_size), xu=np.ones(T*item_size) * upper_bound)
+        super().__init__(n_var=T*item_size, n_obj=1, n_constr=0, xl=np.zeros(T*item_size), xu=np.ones(T*item_size) * upper_bound) # xl=np.zeros(T*item_size)
         self.parameters=[T, product_size, item_size]
         self.count = 0
         self.fitness_list = []
@@ -134,7 +134,7 @@ def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
     flag = 1
     current_best_obj = initial_sol
     print("GA", end="")
-    res = minimize(problem, algorithm, termination, seed=23, verbose=False)
+    res = minimize(problem, algorithm, termination, seed=98, verbose=False)
     best_obj = int(res.F[0])
     ga_best_solution = res.X.reshape(T,item_size).astype('int')
     every_best_value.extend(ga_sol_list_order(current_best_obj, problem.fitness_list))
@@ -145,7 +145,7 @@ def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
         if best_obj < current_best_obj and flag == 1: # remain GA
             current_best_obj = best_obj
             print("->GA", end="")
-            res = minimize(problem, algorithm, termination, seed=44, verbose=False)
+            res = minimize(problem, algorithm, termination, seed=98, verbose=False)
             every_best_value.extend(ga_sol_list_order(current_best_obj, problem.fitness_list))
             problem.fitness_list = []
             best_obj = int(res.F[0])
@@ -188,10 +188,15 @@ if __name__ == '__main__' :
 	import time
 	time.clock = time.time
 	
+	# mixed ga and spsa algorithm 3
+	Max_measurements = 4500*5
+	upper_bound = product_size*1000
+	initial_sol = 1000000000
+	mix3_pop_size = 25
 	tic = time.clock()
-	best_de, bl_de = mix3_fun(T, product_size, item_size, 18000, 50, 1000*product_size, 1000000000)
-	time_spsa = time.clock()-tic
-	print(">> GA in %.5f sec." %time_spsa)
+	best_mix3, bl_mix3 = mix3_fun(T, product_size, item_size, Max_measurements, mix3_pop_size, upper_bound, initial_sol)
+	time_mix3 = time.clock()-tic
+	print(">> MIX3 in %.5f sec." %time_mix3)
 
 	# visualization
 	plt.figure(figsize = (15,8))
@@ -201,7 +206,7 @@ if __name__ == '__main__' :
 	plt.axvline(x=9200, c="r", ls="--", lw=2)
 	plt.axvline(x=15200, c="r", ls="--", lw=2)
 	plt.axvline(x=17700, c="r", ls="--", lw=2)
-	plt.plot(bl_de,linewidth = 2, label = "MIX3 best fitness convergence", color = 'b')
+	plt.plot(bl_mix3,linewidth = 2, label = "MIX3 best fitness convergence", color = 'b')
 	plt.legend()
 	plt.show()
 '''

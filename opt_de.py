@@ -30,8 +30,8 @@ def de_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
     algorithm = DE(
         pop_size,
         sampling=FloatRandomSampling(),
-        variant="DE/rand/2/bin",
-        CR=0.3,
+        variant="DE/rand/1/bin",
+        CR=0.7,
         dither="vector",
         jitter=False
     )

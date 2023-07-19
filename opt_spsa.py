@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore')
 # -----------------------------------------------------------
 def initial_sol_fun(T, product_size, item_size, upper_bound, lower_bound = 0):
 	# return np.random.randint(lower_bound, upper_bound, size=(T, item_size))
-	return np.ones((T, item_size))*upper_bound/2
+	return np.ones((T, item_size))*10000
 
 '''
 def normalization(T, product_size, item_size, upper_bound, sample_size = 50):
@@ -107,10 +107,18 @@ if __name__ == '__main__' :
 	import time
 	time.clock = time.time
 	
+	# spsa algorithm
+	spsa_measurements_per_iteration = 3
+	Max_measurements = 4500*2
+	upper_bound = product_size*1000
+	initial_sol = 3000000000
+ 
 	tic = time.clock()
-	best_spsa, bl_spsa = spsa_fun(T, product_size, item_size, 9000, product_size*1000, 1000000000)
+	best_spsa, bl_spsa = spsa_fun(T, product_size, item_size, int(Max_measurements/spsa_measurements_per_iteration), upper_bound, initial_sol)
 	time_spsa = time.clock()-tic
 	print(">> SPSA in %.5f sec." %time_spsa)
+ 
+ 
 	# visualization
 	plt.figure(figsize = (15,8))
 	plt.xlabel("# Measurements",fontsize = 15)
