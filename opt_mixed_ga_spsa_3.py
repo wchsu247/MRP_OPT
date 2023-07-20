@@ -24,7 +24,7 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial_s
 	# index setting (1)
 	alpha = .602 # .602 from (Spall, 1998)
 	gamma = .167 # .167 default
-	a = .00101 # .101 found empirically using HyperOpt
+	a = .000101 # .101 found empirically using HyperOpt
 	A = .193 # .193 default
 	c = 1 # .0277 default # T * product_size *item_size
 	u = ga_best_solution
@@ -101,6 +101,7 @@ def ga_sol_list_order(upper_bound, fitness_list):
             every_best_value.append(every_best_value[i])
     return every_best_value
 
+
 class MyProblem(ElementwiseProblem):
     def __init__(self, T, product_size, item_size, upper_bound):
         super().__init__(n_var=T*item_size, n_obj=1, n_constr=0, xl=np.zeros(T*item_size), xu=np.ones(T*item_size) * upper_bound) # xl=np.zeros(T*item_size)
@@ -145,7 +146,7 @@ def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
         if best_obj < current_best_obj and flag == 1: # remain GA
             current_best_obj = best_obj
             print("->GA", end="")
-            res = minimize(problem, algorithm, termination, seed=98, verbose=False)
+            res = minimize(problem, algorithm, termination, seed=43, verbose=False)
             every_best_value.extend(ga_sol_list_order(current_best_obj, problem.fitness_list))
             problem.fitness_list = []
             best_obj = int(res.F[0])
@@ -166,7 +167,7 @@ def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
 
         elif best_obj >= current_best_obj and flag == 2:   # switch to GA
             print("->GA", end="")
-            res = minimize(problem, algorithm, termination, seed=98, verbose=False)
+            res = minimize(problem, algorithm, termination, seed=21, verbose=False)
             every_best_value.extend(ga_sol_list_order(current_best_obj, problem.fitness_list))
             problem.fitness_list = []
             best_obj = int(res.F[0])
@@ -189,9 +190,9 @@ if __name__ == '__main__' :
 	time.clock = time.time
 	
 	# mixed ga and spsa algorithm 3
-	Max_measurements = 4500*5
+	Max_measurements = 4500*20
 	upper_bound = product_size*1000
-	initial_sol = 1000000000
+	initial_sol = 732384426
 	mix3_pop_size = 25
 	tic = time.clock()
 	best_mix3, bl_mix3 = mix3_fun(T, product_size, item_size, Max_measurements, mix3_pop_size, upper_bound, initial_sol)

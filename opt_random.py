@@ -28,23 +28,34 @@ def random_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial
 		best_obj_list.append(best_obj)
 
 	print("The best fitness:   %d" %(best_obj))
-	# -----------------------------------------------------------------------------------
-	'''# visualization
-	plt.figure(figsize = (15,8))
-	plt.xlabel("Iteration",fontsize = 15)
-	plt.ylabel("Fitness",fontsize = 15)
-
-	plt.plot(best_obj_list,linewidth = 2, label = "Best fitness convergence", color = 'b')
-	plt.legend()
-	plt.show()
-	'''
 
 	return best_obj, best_obj_list #, best_arrival_set
-'''
-# test
+
+'''# test
 if __name__ == '__main__' :
 
 	print("go ...")
 	T, product_size, item_size = (200, 40, 30)
-	random_fun(T, product_size, item_size)
+	import time
+	time.clock = time.time
+
+	Max_measurements = 4500*20
+	upper_bound = product_size*1000
+	initial_sol = 732384426
+ 
+	# fully random search
+	tic = time.clock()
+	best_random, bl_random = random_fun(T, product_size, item_size, Max_measurements, upper_bound, initial_sol)
+	time_random = time.clock()-tic
+
+	print(">> Random in %.5f sec." %time_random)
+
+	# visualization
+	plt.figure(figsize = (15,8))
+	plt.xlabel("# Measurements",fontsize = 15)
+	plt.ylabel("Fitness",fontsize = 15)
+
+	plt.plot(bl_random, linewidth = 2, label = "Best fitness convergence", color = 'b')
+	plt.legend()
+	plt.show()
 '''

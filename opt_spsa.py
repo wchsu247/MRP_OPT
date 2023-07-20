@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore')
 # -----------------------------------------------------------
 def initial_sol_fun(T, product_size, item_size, upper_bound, lower_bound = 0):
 	# return np.random.randint(lower_bound, upper_bound, size=(T, item_size))
-	return np.ones((T, item_size))*10000
+	return np.ones((T, item_size))*upper_bound
 
 '''
 def normalization(T, product_size, item_size, upper_bound, sample_size = 50):
@@ -33,9 +33,9 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial_s
 	'''
 	# -----------------------------------------------------------
 	# index setting (1)
-	alpha = .602 # .602 from (Spall, 1998)
+	alpha = 1 # .602 from (Spall, 1998)
 	gamma = .167 # .167 default
-	a = .00101 # .101 found empirically using HyperOpt
+	a = .000101 # .101 found empirically using HyperOpt
 	A = .193 # .193 default
 	c = 1 # .0277 default # T * product_size *item_size
 	u = initial_sol_fun(T, product_size, item_size, upper_bound)
@@ -109,9 +109,9 @@ if __name__ == '__main__' :
 	
 	# spsa algorithm
 	spsa_measurements_per_iteration = 3
-	Max_measurements = 4500*2
+	Max_measurements = 4500*20
 	upper_bound = product_size*1000
-	initial_sol = 3000000000
+	initial_sol = 732384426
  
 	tic = time.clock()
 	best_spsa, bl_spsa = spsa_fun(T, product_size, item_size, int(Max_measurements/spsa_measurements_per_iteration), upper_bound, initial_sol)

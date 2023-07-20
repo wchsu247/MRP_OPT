@@ -42,7 +42,7 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
     survival=FitnessSurvival(),
     n_offsprings=None,
     eliminate_duplicates=True)
-    res = minimize(problem, algorithm, termination, seed=98, verbose=False)
+    res = minimize(problem, algorithm, termination, seed=95, verbose=False)
     # print(problem.fitness_list)
 
 
@@ -62,24 +62,31 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
     
     return res.F[0], every_best_value
 
-# test
+'''# test
 if __name__ == '__main__' :
 	print("go ...")
 	T, product_size, item_size = (200, 40, 30)
 	import time
 	time.clock = time.time
 	
+	# genetic algorithm new
+
+	Max_measurements = 4500*20
+	upper_bound = product_size*1000
+	initial_sol = 400000000
+ 
+	ga_pop_size = 50
 	tic = time.clock()
-	best_de, bl_de = ga_fun(T, product_size, item_size, 360, 50, 1000*product_size, 1000000000)
-	time_spsa = time.clock()-tic
-	print(">> DE in %.5f sec." %time_spsa)
+	best_ga, bl_ga = ga_fun(T, product_size, item_size, int(Max_measurements/ga_pop_size), ga_pop_size, upper_bound, initial_sol)
+	time_ga = time.clock()-tic
+	print(">> GA in %.5f sec." %time_ga)
 
     # visualization
 	plt.figure(figsize = (15,8))
 	plt.xlabel("Iteration",fontsize = 15)
 	plt.ylabel("Fitness",fontsize = 15)
 
-	plt.plot(bl_de,linewidth = 2, label = "Best fitness convergence", color = 'b')
+	plt.plot(bl_ga,linewidth = 2, label = "Best fitness convergence", color = 'b')
 	plt.legend()
 	plt.show()
-
+'''
