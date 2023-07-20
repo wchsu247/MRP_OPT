@@ -18,17 +18,17 @@ time.clock = time.time
 if __name__ == '__main__' :
 
 	print("go ...")
-	T, product_size, item_size = (5, 4, 3)
+	T, product_size, item_size = (200, 40, 500)
 	demand, bom = simulation_model.data_gen(T, product_size, item_size) # data generation
 	# arrival = np.random.randint(0, 10000, size=(T, item_size))
-	arrival = np.ones((T, item_size))*96
+	arrival = np.ones((T, item_size))*38400/5
 	
 	tic = time.clock()
 	# obj_value_1 = simulation_model.ans_fun(arrival, T, product_size, item_size)
 	obj_value_1 = ros.replications_of_sim(T, product_size, item_size, arrival)
 	print("NEW model >> One time simulation in %.5f sec." %(time.clock()-tic))
 
-
+	'''
 	T, product_size, item_size = (5, 4, 3)
 	demand, bom = simulation_model.data_gen(T, product_size, item_size) # data generation
 	arrival = np.random.randint(0, 1024, size=(T, item_size))
@@ -36,5 +36,5 @@ if __name__ == '__main__' :
 	# obj_value_2 =  simulation_model.ans_fun(arrival, T, product_size, item_size)
 	obj_value_2 = ros.replications_of_sim(T, product_size, item_size, arrival)
 	print("NEW model >> One time simulation in %.5f sec." %(time.clock()-tic))
-
+	'''
 	print(obj_value_1)
