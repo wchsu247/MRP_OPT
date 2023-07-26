@@ -42,7 +42,7 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
     survival=FitnessSurvival(),
     n_offsprings=None,
     eliminate_duplicates=True)
-    res = minimize(problem, algorithm, termination, seed=95, verbose=False)
+    res = minimize(problem, algorithm, termination, seed=99, verbose=False)
     # print(problem.fitness_list)
 
 

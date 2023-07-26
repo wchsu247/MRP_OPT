@@ -117,7 +117,7 @@ class MyProblem(ElementwiseProblem):
         self.fitness_list.append(f1)
         out["F"] = [f1]
 
-def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, initial_sol, check_range = 1800):
+def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, initial_sol, check_range = 1500):
     problem = MyProblem(T, product_size, item_size, upper_bound)
     termination = get_termination("n_gen", int(check_range/pop_size))
     algorithm = GA(
@@ -135,7 +135,7 @@ def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
     flag = 1
     current_best_obj = initial_sol
     print("GA", end="")
-    res = minimize(problem, algorithm, termination, seed=98, verbose=False)
+    res = minimize(problem, algorithm, termination, seed=43, verbose=False)
     best_obj = int(res.F[0])
     ga_best_solution = res.X.reshape(T,item_size).astype('int')
     every_best_value.extend(ga_sol_list_order(current_best_obj, problem.fitness_list))
@@ -146,7 +146,7 @@ def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
         if best_obj < current_best_obj and flag == 1: # remain GA
             current_best_obj = best_obj
             print("->GA", end="")
-            res = minimize(problem, algorithm, termination, seed=43, verbose=False)
+            res = minimize(problem, algorithm, termination, seed=1, verbose=False)
             every_best_value.extend(ga_sol_list_order(current_best_obj, problem.fitness_list))
             problem.fitness_list = []
             best_obj = int(res.F[0])
@@ -167,7 +167,7 @@ def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
 
         elif best_obj >= current_best_obj and flag == 2:   # switch to GA
             print("->GA", end="")
-            res = minimize(problem, algorithm, termination, seed=21, verbose=False)
+            res = minimize(problem, algorithm, termination, seed=52, verbose=False)
             every_best_value.extend(ga_sol_list_order(current_best_obj, problem.fitness_list))
             problem.fitness_list = []
             best_obj = int(res.F[0])
@@ -185,14 +185,14 @@ def mix3_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, in
 '''# test
 if __name__ == '__main__' :
 	print("go ...")
-	T, product_size, item_size = (200, 40, 30)
+	T, product_size, item_size = (200, 40, 500)
 	import time
 	time.clock = time.time
 	
 	# mixed ga and spsa algorithm 3
-	Max_measurements = 4500*20
-	upper_bound = product_size*1000
-	initial_sol = 732384426
+	Max_measurements = 4500*3
+	upper_bound = 38400/5
+	initial_sol = 31713756827
 	mix3_pop_size = 25
 	tic = time.clock()
 	best_mix3, bl_mix3 = mix3_fun(T, product_size, item_size, Max_measurements, mix3_pop_size, upper_bound, initial_sol)

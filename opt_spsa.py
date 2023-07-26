@@ -33,13 +33,13 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial_s
 	'''
 	# -----------------------------------------------------------
 	# index setting (1)
-	alpha = 1 # .602 from (Spall, 1998)
+	alpha = .602 # .602 from (Spall, 1998)
 	gamma = .167 # .167 default
-	a = .000101 # .101 found empirically using HyperOpt
-	A = .193 # .193 default
-	c = 1 # .0277 default # T * product_size *item_size
+	a = .00101 # .101 found empirically using HyperOpt
+	A = 10 # .193 default
+	c = 75 # .0277 default # T * product_size *item_size
 	u = initial_sol_fun(T, product_size, item_size, upper_bound)
-	d_k = 100
+	d_k = 1
 	# sample_std = normalization(T, product_size, item_size, upper_bound)
 	# print(sample_mean)
 	# scalar_u = ros.replications_of_sim(T, product_size, item_size, u)
@@ -47,6 +47,7 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial_s
 
 	best_obj = initial_sol
 	best_obj_list = [initial_sol]
+	best_solution = u
 
 	for k in range(opt_count_limit):
 
@@ -75,18 +76,23 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial_s
 
 		# Step 4: Gradient approximation
 		g_k = np.dot((y_thetaplus - y_thetaminus) / (2.0*c_k*d_k**2), delta_k)
-		# print(c_k*delta_k[0][0], a_k * g_k[0][0])
+		print(c_k*delta_k[0][0], a_k * g_k[0][0])
 
 		# Step 5: Update u estimate
 		# u = np.asarray(np.where((u-a_k*g_k<0, 0, u-a_k*g_k) & (u-a_k*g_k>64, 64, u-a_k*g_k)), dtype = 'int')
 		u = np.where(u - a_k * g_k < lower_bound, lower_bound, u - a_k * g_k)
 		u = np.where(u > upper_bound, upper_bound, u).astype('int')
-		obj_value = min(ros.replications_of_sim(T, product_size, item_size, u),y_thetaplus,y_thetaminus)
-		# print(u)
+  
+
+		obj_list = [ros.replications_of_sim(T, product_size, item_size, u), y_thetaplus, y_thetaminus]
+		sol_list = [u, thetaplus, thetaminus]
+		obj_value = min(obj_list)
+		obj_solution = sol_list[obj_list.index(min(obj_list))]
 
 		# Step 6: Check for convergence
 		if obj_value < best_obj:
 			best_obj = obj_value
+			best_solution = obj_solution
 		best_obj_list.append(best_obj)
 
 	print("The best fitness:   %d" %(best_obj))
@@ -97,10 +103,10 @@ def spsa_fun(T, product_size, item_size, opt_count_limit, upper_bound, initial_s
 		for k in range(spsa_measurment_per_iteration): spsa_ans_list.append(best_obj_list[i+1])
 	# -----------------------------------------------------------------------------------
 
-	return best_obj, spsa_ans_list
+	return best_obj, spsa_ans_list #, best_solution
 
 
-'''# test
+# test
 if __name__ == '__main__' :
 	print("go ...")
 	T, product_size, item_size = (200, 40, 30)
@@ -109,9 +115,9 @@ if __name__ == '__main__' :
 	
 	# spsa algorithm
 	spsa_measurements_per_iteration = 3
-	Max_measurements = 4500*20
-	upper_bound = product_size*1000
-	initial_sol = 732384426
+	Max_measurements = 4500*4
+	upper_bound = 38400
+	initial_sol = 1000000000
  
 	tic = time.clock()
 	best_spsa, bl_spsa = spsa_fun(T, product_size, item_size, int(Max_measurements/spsa_measurements_per_iteration), upper_bound, initial_sol)
@@ -127,4 +133,4 @@ if __name__ == '__main__' :
 	plt.plot(bl_spsa,linewidth = 2, label = "Best fitness convergence", color = 'b')
 	plt.legend()
 	plt.show()
-'''
+

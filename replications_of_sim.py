@@ -46,8 +46,8 @@ print("test")
 T, product_size, item_size =  (52, 4, 3)
 arrival = np.random.randint(2, 50, size=(T, item_size))
 
-ans, y = replications_of_sim(T, product_size, item_size, arrival)
-print(ans, y)
+ans = replications_of_sim(T, product_size, item_size, best_solution)
+print(ans)
 '''
 
 
