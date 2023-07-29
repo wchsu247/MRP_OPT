@@ -163,5 +163,5 @@ if __name__ == '__main__' :
 		df_for_wc = get_total_backlog(arrival, demand, bom)
 		print(df_for_wc)
 		df_for_backlog = alloc_backlog(df_for_wc, demand, bom)
-		# print(df_for_backlog)
+		print(df_for_backlog)
 

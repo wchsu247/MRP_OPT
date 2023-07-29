@@ -1,10 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+from brokenaxes import brokenaxes 
 
 
 
-def vis(bl_ga, bl_spsa):
+def vis(bl_ga, bl_spsa, bl_gsha, d, ir_target):
 
 	random_number = np.random.randint(1000, 9999)
 	plt.figure(figsize = (15,8))
@@ -16,10 +17,16 @@ def vis(bl_ga, bl_spsa):
 	plt.plot(bl_spsa, 'b')
 	# plt.plot(bl_de, 'g')
 	# plt.plot(bl_mix, 'm')
-	# plt.plot(bl_mix2, 'c')
+	plt.plot(bl_gsha, 'c')
 	# plt.plot(bl_mix3, 'g')
 
-	plt.legend(['GA', 'SPSA'])
+	for i in range(len(d)-1):	plt.axvline(x=d[i], c="r", ls="--", lw=1)
+
+	plt.axhline(y=ir_target, c="m", ls="--", lw=1)
+
+	 
+	
+	plt.legend(['GA', 'SPSA', 'GSHA'])
 	plt.title('MRP Problem',fontsize = 15)
 	plt.savefig('c:/Users/MB608/Desktop/theis_MRP/theis_MRP/Reusult_Plot/'+str(random_number)+'.png')
 	print(random_number)

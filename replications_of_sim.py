@@ -8,7 +8,7 @@ import sys
 MAX_INT=sys.maxsize
 
 # return the mean value from replications of simulation
-def replications_of_sim(T, product_size, item_size, arrival, d_required = 0.015, N_min = 1, alpha = 0.05, y_lim = 2):
+def replications_of_sim(T, product_size, item_size, bom, arrival, d_required = 0.015, N_min = 1, alpha = 0.05, y_lim = 2):
 	'''
 		Input: T, product_size, item_size, arrival (one solution)
 		Parameters: 
@@ -26,10 +26,10 @@ def replications_of_sim(T, product_size, item_size, arrival, d_required = 0.015,
 		# print("aaaaaaa")
 		if y == N_min:
 			for i in range(N_min):
-				obj_value = simulation_model.ans_fun(arrival, T, product_size, item_size)
+				obj_value = simulation_model.ans_fun(arrival, T, product_size, item_size, bom)
 				sim_obj.append(obj_value)
 		else:
-			obj_value = simulation_model.ans_fun(arrival, T, product_size, item_size)
+			obj_value = simulation_model.ans_fun(arrival, T, product_size, item_size, bom)
 			sim_obj.append(obj_value)
 
 		# find t value of degrees = y-1, significance = 1 - alpha/2

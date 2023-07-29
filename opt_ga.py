@@ -7,12 +7,12 @@ MAX_INT=sys.maxsize
 import warnings
 warnings.filterwarnings('ignore')
 
-def cal_pop_fitness(T, product_size, item_size, pop):
+def cal_pop_fitness(T, product_size, item_size, bom, pop):
     # Calculating the fitness value of each solution in the current population.
     # The fitness function caulcuates the sum of products between each input and its corresponding weight.
     fitness = []
     for i in pop:
-        fitness.append(ros.replications_of_sim(T, product_size, item_size, i.reshape(T,item_size).astype('int')))
+        fitness.append(ros.replications_of_sim(T, product_size, item_size, bom, i.reshape(T,item_size).astype('int')))
     return fitness
 
 def select_mating_pool(pop, fitness, num_parents):
@@ -50,7 +50,7 @@ def mutation(offspring_crossover):
         offspring_crossover[idx, 4] = offspring_crossover[idx, 4] + random_value
     return offspring_crossover
 #--------------------------------------------------------------------------------
-def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, initial_sol, num_parents_mating = 6):
+def ga_fun(T, product_size, item_size, bom, MaxIteration, pop_size, upper_bound, initial_fit, initial_sol, num_parents_mating = 6):
 
 	# Number of the weights we are looking to optimize.
 	num_weights = T*item_size
@@ -66,11 +66,12 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
 	# Defining the population size.
 	sol_size = (pop_size, num_weights) # The population will have pop_size chromosome where each chromosome has num_weights genes.
 	#Creating the initial population.
-	new_population = numpy.random.uniform(low=0, high=upper_bound, size=sol_size)
-	# print(new_population)
-
+	new_population = numpy.random.uniform(low=0, high=upper_bound, size=(pop_size-1, num_weights))
+	new_population = numpy.append(new_population, initial_sol, axis = 0)
+ 
+ 
 	fitness_list = []
-	current_best_fit = initial_sol
+	current_best_fit = initial_fit
 	current_best_sol = new_population[0]
 
 	measurement = 0
@@ -79,7 +80,7 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
 		
 		# print("Generation : ", measurement)
 		# Measing the fitness of each chromosome in the population.
-		fitness = cal_pop_fitness(T, product_size, item_size, new_population)
+		fitness = cal_pop_fitness(T, product_size, item_size, bom, new_population)
 		fitness_list.extend(fitness)
   
 		if min(fitness) < current_best_fit:
@@ -107,7 +108,7 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
 		measurement += pop_size
 
 	# Store best result
-	every_best_value = [initial_sol]
+	every_best_value = [initial_fit]
  
 	# print(MaxIteration, pop_size)
 	for i in range(MaxIteration):
@@ -115,30 +116,34 @@ def ga_fun(T, product_size, item_size, MaxIteration, pop_size, upper_bound, init
 		elif every_best_value[i] <= fitness_list[i]:	every_best_value.append(every_best_value[i])
 
 	print('The best fitness: %d' %current_best_fit)
-	return current_best_fit, every_best_value, current_best_sol
+	return current_best_fit, every_best_value, current_best_sol.reshape(T,item_size).astype('int')
 
-# test
+'''# test
 if __name__ == '__main__' :
 	print("go ...")
 	T, product_size, item_size = (5, 4, 3)
 	import time
 	time.clock = time.time
 
-	Max_measurements = 4500
+	Max_measurements = 100
 	upper_bound = product_size*20
-	initial_sol = 1000
+ 
+	# update initial solution
+	initial_sol = numpy.ones((1, T*item_size))*upper_bound
+	initial_fit = ros.replications_of_sim(T, product_size, item_size, initial_sol.reshape(T,item_size))
+	# print(initial_sol, initial_fit)
 
-	ga_pop_size = 50
+	ga_pop_size = 8
 	tic = time.clock()
-	best_ga, bl_ga, ans_ga = ga_fun(T, product_size, item_size, Max_measurements, ga_pop_size, upper_bound, initial_sol)
+	best_ga, bl_ga, ans_ga = ga_fun(T, product_size, item_size, Max_measurements, ga_pop_size, upper_bound, initial_fit, initial_sol)
 	time_ga = time.clock()-tic
 	print(">> GA in %.5f sec." %time_ga)
 
-	'''
-	print(ans_ga)
-	a, b, c = ce.cost_evaluation(T, product_size, item_size, ans_ga.reshape(T,item_size).astype('int'))
-	print(a, b, c)
-	'''
+	
+	# print(ans_ga)
+	# a, b, c = ce.cost_evaluation(T, product_size, item_size, ans_ga.reshape(T,item_size).astype('int'))
+	# print(a, b, c)
+	
 
 	# visualization
 	plt.figure(figsize = (15,8))
@@ -148,3 +153,4 @@ if __name__ == '__main__' :
 	plt.plot(bl_ga,linewidth = 2, label = "Best fitness convergence", color = 'b')
 	plt.legend()
 	plt.show()
+'''

@@ -34,19 +34,20 @@ def get_total_backlog(arrival, demand, bom):
 def obj_function(stock, backlog, cost_s = .5, cost_b = 1):
 	return cost_s*stock + cost_b*backlog
 
-def ans_fun(arrival, T, product_size, item_size, ini_backlog = None):
+def ans_fun(arrival, T, product_size, item_size, bom, ini_backlog = None):
     # calculate MRP and objective function
-    demand, bom = data_gen(T, product_size, item_size)
+    
+    demand = data_gen(T, product_size, item_size)
     df = get_total_backlog(arrival, demand, bom)
     return obj_function(df['stock_qty'].sum(), df['backlog_qty'].sum())
 
 # simulation: data generation
-def data_gen(T, product_size, item_size, lam = 40):
+def data_gen(T, product_size, item_size, lam = 1600):
 	# T: time frame
 	# product_size: size of product types
 	# item_size: size of component types
 
-	bom = np.random.randint(2, size=(product_size, item_size))
+	# bom = np.random.randint(2, size=(product_size, item_size))
 	demand = np.random.randint(0, lam/2, size=(T, product_size)) # (time by product array) demand @ t 
 	
 	# Poisson Distribution
@@ -56,7 +57,7 @@ def data_gen(T, product_size, item_size, lam = 40):
 	# demand = np.array([[5,5,5,5],[5,5,5,5],[5,5,5,5],[5,5,5,5],[5,5,5,5]])
 	# bom = np.array([[1,1,1],[0,0,0],[1,1,0],[1,0,0]])
 
-	return demand, bom
+	return demand #, bom
 
 '''
 # ==================================================
