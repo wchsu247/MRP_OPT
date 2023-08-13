@@ -116,8 +116,9 @@ def alloc_backlog(df_backlog, demand, bom):
 				t -= 1
 		
 	# tic = time.clock()
-
 	df_ans = df_sorting(ans)
+	df_ans = df_ans.groupby(['time','product'])['backlog_qty'].sum().reset_index()
+	print(type(ans))
 	# print(">> sorting in %.5f sec." %(time.clock()-tic))
 
 	return df_ans

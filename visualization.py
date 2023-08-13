@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-from brokenaxes import brokenaxes 
+import matplotlib
+matplotlib.rc('font', family='Microsoft JhengHei')
 
 
 
@@ -9,8 +10,8 @@ def vis(bl_ga, bl_spsa, bl_gsha, d, ir_target):
 
 	random_number = np.random.randint(1000, 9999)
 	plt.figure(figsize = (15,8))
-	plt.xlabel("# Measurements",fontsize = 15)
-	plt.ylabel("Total Cost",fontsize = 15)
+	plt.xlabel("評估次數",fontsize = 15)
+	plt.ylabel("總成本評估值",fontsize = 15)
 
 	# plt.plot(bl_random, 'k')
 	plt.plot(bl_ga, 'r')

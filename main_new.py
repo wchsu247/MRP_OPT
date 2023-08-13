@@ -7,15 +7,15 @@ import  opt_mixed_ga_spsa, opt_mixed_ga_spsa_3,replications_of_sim as ros, opt_g
 if __name__ == '__main__':
 	
 	#=============================index setting==============================
-	T, product_size, item_size =  (200, 40, 30) # product_size should be power of 2
+	T, product_size, item_size =  (5, 4, 3) # product_size should be power of 2
 	bom = np.random.randint(2, size=(product_size, item_size))
 	
 	print(f'T={T},  product_size={product_size}, item_size={item_size}')
 	print(bom)
  
-	upper_bound = product_size*400
+	upper_bound = product_size*40
 	# MaxIteration = 30
-	Max_measurements = 4500 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
+	Max_measurements = 9000 # This value should be a multiple of 'pop_size = 50' and 'spsa_measurements_per_iteration = 3'
 	# initial_sol = ros.replications_of_sim(T, product_size, item_size, np.random.randint(0, upper_bound/20, size=(T, item_size)))
 	# initial_sol = 940000000
  
@@ -105,7 +105,7 @@ if __name__ == '__main__':
 	print("The best ans of GA:   %.5f for %.5f sec." % (best_ga, time_ga))
 	print("The best ans of SPSA: %.5f for %.5f sec." % (best_spsa, time_spsa))
 	print("The best ans of GSHA: %.5f for %.5f sec." % (best_gsha, time_gsha))
- 
+	
 	# cost evaluation
 	sample_mean_initial, sample_std_initial, sample_size_initial = ce.cost_evaluation(T, product_size, item_size, bom, initial_sol.reshape(T,item_size))
 	sample_mean_ga, sample_std_ga, sample_size_ga = ce.cost_evaluation(T, product_size, item_size, bom, ans_ga)

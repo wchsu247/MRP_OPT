@@ -10,7 +10,7 @@ def cost_evaluation(T, product_size, item_size, bom, arrival, sample_lb = 30, cl
         sample_list.append(simulation_model.ans_fun(arrival, T, product_size, item_size, bom))
 
     error_ratio = 1
-    while error_ratio >= 0.001:
+    while error_ratio >= 0.1:
         sample_size += 1
         sample_list.append(simulation_model.ans_fun(arrival, T, product_size, item_size, bom))
 
