@@ -1,7 +1,7 @@
 import numpy as np
 import time
 time.clock = time.time
-import opt_ga_new, old_code.opt_random as opt_random, opt_spsa, old_code.opt_de as opt_de, visualization, visualization_og
+import opt_ga_new, old_code.opt_random as opt_random, opt_spsa, old_code.opt_de as opt_de, visualization, old_code.visualization_og as visualization_og
 import  opt_mixed_ga_spsa, old_code.opt_mixed_ga_spsa_2 as opt_mixed_ga_spsa_2, opt_mixed_ga_spsa_3
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+from matplotlib.ticker import MultipleLocator
 import matplotlib
 matplotlib.rc('font', family='Microsoft JhengHei')
 
@@ -21,14 +22,16 @@ def vis(bl_ga, bl_spsa, bl_gsha, d, ir_target):
 	plt.plot(bl_gsha, 'c')
 	# plt.plot(bl_mix3, 'g')
 
-	for i in range(len(d)-1):	plt.axvline(x=d[i], c="r", ls="--", lw=1)
+	# for i in range(len(d)-1):	plt.axvline(x=d[i], c="r", ls="--", lw=1)
 
 	plt.axhline(y=ir_target, c="m", ls="--", lw=1)
 
-	 
+
 	
 	plt.legend(['GA', 'SPSA', 'GSHA'])
-	plt.title('MRP Problem',fontsize = 15)
+
+ 
+	# plt.title('MRP Problem',fontsize = 15)
 	plt.savefig('c:/Users/MB608/Desktop/theis_MRP/theis_MRP/Reusult_Plot/'+str(random_number)+'.png')
 	print(random_number)
 	# plt.savefig(f'c:/Users/MB608/Desktop/theis_MRP/theis_MRP/Reusult_Plot/{random_number}.png')

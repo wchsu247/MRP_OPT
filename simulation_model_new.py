@@ -128,13 +128,13 @@ def ans_fun(arrival, T, product_size, item_size, bom, ini_backlog = None):
     return obj_function(df['stock_qty'].sum(), df_2['backlog_qty'].sum())
 
 # simulation: data generation
-def data_gen(T, product_size, item_size, lam = 40):
+def data_gen(T, product_size, item_size, lam = 800):
 	# T: time frame
 	# product_size: size of product types
 	# item_size: size of component types
 
 	# bom = np.random.randint(2, size=(product_size, item_size))
-	demand = np.random.randint(0, lam/2, size=(T, product_size)) # (time by product array) demand @ t 
+	demand = np.random.randint(0, lam, size=(T, product_size)) # (time by product array) demand @ t 
 	# demand = np.array([[5,5,5,5],[5,5,5,5],[5,5,5,5],[5,5,5,5],[5,5,5,5]])
 	# Poisson Distribution
 	# demand = random.poisson(lam, size=(T, product_size)) # lam — rate or known number of occurences e.g. 2 for above problem

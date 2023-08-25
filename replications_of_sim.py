@@ -1,5 +1,5 @@
 import simulation_model_new as simulation_model
-import simulation_model_fix
+import simulation_model_fix 
 import numpy as np
 import scipy.stats as stats
 import math
@@ -8,7 +8,7 @@ import sys
 MAX_INT=sys.maxsize
 
 # return the mean value from replications of simulation
-def replications_of_sim(T, product_size, item_size, bom, arrival, d_required = 0.015, N_min = 1, alpha = 0.05, y_lim = 2):
+def replications_of_sim(T, product_size, item_size, bom, arrival, d_required = 0.015, N_min = 10, alpha = 0.05, y_lim = 40):
 	'''
 		Input: T, product_size, item_size, arrival (one solution)
 		Parameters: 
@@ -38,17 +38,7 @@ def replications_of_sim(T, product_size, item_size, bom, arrival, d_required = 0
 		d_y = (t_value*(np.std(sim_obj, ddof=1)/math.sqrt(y)))/(stat.fmean(sim_obj))
 		y += 1
 	
-	return stat.fmean(sim_obj) #, y-1
-
-'''
-# testing
-print("test")
-T, product_size, item_size =  (52, 4, 3)
-arrival = np.random.randint(2, 50, size=(T, item_size))
-
-ans = replications_of_sim(T, product_size, item_size, best_solution)
-print(ans)
-'''
+	return stat.fmean(sim_obj) , y-1
 
 
 

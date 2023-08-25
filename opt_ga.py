@@ -1,4 +1,5 @@
 import numpy
+numpy.random.seed(1)
 import matplotlib.pyplot as plt
 import replications_of_sim as ros
 import cost_evaluation as ce
@@ -11,9 +12,12 @@ def cal_pop_fitness(T, product_size, item_size, bom, pop):
     # Calculating the fitness value of each solution in the current population.
     # The fitness function caulcuates the sum of products between each input and its corresponding weight.
     fitness = []
+    rc = 0
     for i in pop:
-        fitness.append(ros.replications_of_sim(T, product_size, item_size, bom, i.reshape(T,item_size).astype('int')))
-    return fitness
+        fit, random_count = ros.replications_of_sim(T, product_size, item_size, bom, i.reshape(T,item_size).astype('int'))
+        fitness.append(fit)
+        rc += random_count
+    return fitness, rc
 
 def select_mating_pool(pop, fitness, num_parents):
     # Selecting the best individuals in the current generation as parents for producing the offspring of the next generation.
@@ -46,12 +50,16 @@ def mutation(offspring_crossover):
     # Mutation changes a single gene in each offspring randomly.
     for idx in range(offspring_crossover.shape[0]):
         # The random value to be added to the gene.
+        numpy.random.seed(1)
         random_value = numpy.random.uniform(-1.0, 1.0, 1)
         offspring_crossover[idx, 4] = offspring_crossover[idx, 4] + random_value
     return offspring_crossover
 #--------------------------------------------------------------------------------
 def ga_fun(T, product_size, item_size, bom, MaxIteration, pop_size, upper_bound, initial_fit, initial_sol, num_parents_mating = 6):
-
+    
+	# random count
+	rc = 0
+ 
 	# Number of the weights we are looking to optimize.
 	num_weights = T*item_size
 
@@ -66,6 +74,7 @@ def ga_fun(T, product_size, item_size, bom, MaxIteration, pop_size, upper_bound,
 	# Defining the population size.
 	sol_size = (pop_size, num_weights) # The population will have pop_size chromosome where each chromosome has num_weights genes.
 	#Creating the initial population.
+	numpy.random.seed(1)
 	new_population = numpy.random.uniform(low=0, high=upper_bound, size=(pop_size-1, num_weights))
 	new_population = numpy.append(new_population, initial_sol, axis = 0)
  
@@ -76,13 +85,15 @@ def ga_fun(T, product_size, item_size, bom, MaxIteration, pop_size, upper_bound,
 
 	measurement = 0
 	while measurement < MaxIteration:
-		
-		
+
+
+
 		# print("Generation : ", measurement)
 		# Measing the fitness of each chromosome in the population.
-		fitness = cal_pop_fitness(T, product_size, item_size, bom, new_population)
+		fitness, random_count = cal_pop_fitness(T, product_size, item_size, bom, new_population)
 		fitness_list.extend(fitness)
-  
+		rc += random_count
+
 		if min(fitness) < current_best_fit:
 			current_best_fit = min(fitness)
 			current_best_sol = new_population[fitness.index(current_best_fit)]
@@ -116,7 +127,7 @@ def ga_fun(T, product_size, item_size, bom, MaxIteration, pop_size, upper_bound,
 		elif every_best_value[i] <= fitness_list[i]:	every_best_value.append(every_best_value[i])
 
 	print('The best fitness: %d' %current_best_fit)
-	return current_best_fit, every_best_value, current_best_sol.reshape(T,item_size).astype('int')
+	return current_best_fit, every_best_value, current_best_sol.reshape(T,item_size).astype('int'), rc
 
 '''# test
 if __name__ == '__main__' :
