@@ -1,8 +1,8 @@
 import numpy as np
 import time
 time.clock = time.time
-import opt_ga, opt_spsa, visualization
-import  replications_of_sim as ros, opt_gsha, cost_evaluation as ce
+import opt_ga, opt_spsa, opt_gsha, visualization
+import  replications_of_sim as ros, cost_evaluation as ce
 
 if __name__ == '__main__':
 	
