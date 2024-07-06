@@ -32,7 +32,7 @@ def vis(bl_ga, bl_spsa, bl_gsha, d, ir_target):
 
  
 	# plt.title('MRP Problem',fontsize = 15)
-	plt.savefig('c:/Users/MB608/Desktop/theis_MRP/theis_MRP/Reusult_Plot/'+str(random_number)+'.png')
+	plt.savefig('/Users/j1999c4/Desktop/SCHOOL/論文專區/論文相關檔案/MRP_code/Reusult_Plot'+str(random_number)+'.png')
 	print(random_number)
 	# plt.savefig(f'c:/Users/MB608/Desktop/theis_MRP/theis_MRP/Reusult_Plot/{random_number}.png')
 	# plt.savefig(f'/Users/user/Desktop/MRP-2/Reusult_Plot/{random_number}.png')
